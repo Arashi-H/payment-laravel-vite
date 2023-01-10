@@ -11,7 +11,7 @@ const SideLayout = () => {
       style={({ height: "100vh" }, { display: "flex", flexDirection: "row" })}
     >
       <SideMenu />
-      <main style={({ width: "100%", background: "#F8F9FA" })}>
+      <main style={({ width: "100%"})}>
         <Header/>
         <Outlet />
       </main>

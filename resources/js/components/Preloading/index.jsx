@@ -54,7 +54,7 @@ const Preloading = () => {
             left: 'calc(50% - 50px)',
             opacity: 1
           }}>
-            <TailSpin color={'#284eb2'} height={100} width={100} />
+            <TailSpin color={'#1DD1D6'} height={100} width={100} />
           </div>
         </div>
       }

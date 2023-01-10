@@ -1,17 +1,30 @@
-import React from 'react'
-import { Sidebar, Menu, MenuItem, useProSidebar, SubMenu } from 'react-pro-sidebar';
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
-import { AiOutlineMenu, AiOutlineHome, AiOutlineUsergroupAdd } from "react-icons/ai";
-import { BsFillMenuButtonWideFill } from "react-icons/bs"
-import {FaGenderless} from 'react-icons/fa'
+import { Sidebar, Menu, MenuItem, useProSidebar, SubMenu } from 'react-pro-sidebar';
+import { FaHome, FaRegBuilding, FaGavel, FaYenSign, FaRegClone, FaUniversity, FaCog, FaUsers } from "react-icons/fa";
+import {FiTrendingUp} from "react-icons/fi"
 import styled from 'styled-components';
+
 import styles from "./SideMenu.module.scss"
+import { useResize, checkMobileDevice } from "./../../utils/Helper"
 
 const StyledSidebar = styled(Sidebar)`
+  height: 100vh;
+  color: #fff;
+  border: none!important;
+
+  &.ps-broken {
+    &>div {
+      box-shadow: none;
+    }
+  }
+
   &>div {
+    color: #a9b7d0;
+    box-shadow: 1px 0 20px 0 #3f4d67;
 
     &::-webkit-scrollbar {
-      width: 0;
+      width: 5px;
     }
     
     &::-webkit-scrollbar-track {
@@ -24,44 +37,108 @@ const StyledSidebar = styled(Sidebar)`
       border-radius      : 100px;
       background-clip    : content-box;
       // background-color: rgba(255, 255, 255, 0.1);
-      background-color   : white;
+      background-color   : #3f4d67;
+      transition: background-color .2s linear,width .2s ease-in-out;
+      -webkit-transition: background-color .2s linear,width .2s ease-in-out;
+    }
+
+    &:hover {
+      &::-webkit-scrollbar-thumb {
+        background-color   : #9C9EA1;
+      }
     }
   }
 `
 
 const StyledSubMenu = styled(SubMenu)`
+  border: none;
+  border-left: 3px solid transparent;
+  user-select: none;
+
+  &.ps-open {
+    border-left-color: #1dc4e9;
+
+    &>a {
+      background-color: #333F54;
+      color: #fff;
+      &:hover {
+        background: #333F54;
+        color: #fff;
+      }
+    }
+  }
   &:hover {
     background: transparent;
   }
+  &>a {
+    .ps-menu-icon {
+      font-size: 18px;
+      justify-content: flex-start;
+      width: auto;
+      min-width: auto;
+      margin-right: 14px;
+    }
+    .ps-submenu-expand-icon>span {
+      width: 7px;
+      height: 7px;
+    }
+  }
   &>a:hover {
     background: transparent;
+    color: #1dc4e9;
   }
   &>div {
-    background-color: transparent;
+    background: #39465E;
   }
 `
 
 const StyledTopMenuItem = styled(MenuItem)`
+  user-select: none;
+
   &:hover {
-    background: rgba(248,249,250,.15);
+    background: transparent;
   }
 
   &>a:hover {
     background: transparent;
+    color: #fff;
   }
 
   &:first-child > a{
     height: 70px;
+
+    &:hover {
+      cursor: default;
+    }
   }
 `;
 
 const StyledMenuItem = styled(MenuItem)`
+  border: none;
+  border-left: 3px solid transparent;
+  user-select: none;
+
   &:hover {
-    background: rgba(248,249,250,.15);
+    background: transparent;
+  }
+  &>a {
+    .ps-menu-icon {
+      font-size: 18px;
+      justify-content: flex-start;
+      width: auto;
+      min-width: auto;
+      margin-right: 14px;
+    }
+
+    .ps-submenu-expand-icon>span {
+      width: 7px;
+      height: 7px;
+    }
   }
 
   &>a:hover {
     background: transparent;
+    color: #1dc4e9;
   }
 `;
 
@@ -69,7 +146,13 @@ const StyledMenuItem = styled(MenuItem)`
 
 const SideMenu = () => {
 
+  const sidebarRef = useRef(null);
+
   const { collapseSidebar, toggleSidebar, collapsed, toggled, broken, rtl } = useProSidebar();
+  const { isMobile } = useResize()
+
+  const [clickedMobileMenu, setClickedMobileMenu] = useState(false);
+
   const toggle = () => {
     // toggleSidebar();
     if (toggled) {
@@ -81,51 +164,86 @@ const SideMenu = () => {
     }
   };
 
+  const clickMobileMenu = () => {
+    setClickedMobileMenu((old) => !old)
+    collapseSidebar(!clickedMobileMenu)
+  }
+
+  const sidebarMouseEnter = () => {
+    if(clickedMobileMenu && collapsed) {
+      collapseSidebar()
+    }
+  }
+
+  const sidebarMouseLeave = () => {
+    if(clickedMobileMenu && !collapsed) {
+      collapseSidebar()
+    }
+  }
+
+  const sidebarClick = () => {
+    if(checkMobileDevice()) {
+      if(clickedMobileMenu && collapsed) {
+        collapseSidebar()
+      }
+    }
+  }
+
   return (
     <>
       <StyledSidebar 
-        style={{ height: "100vh", color: "#fff"}} 
-        customBreakPoint="600px"
+        customBreakPoint="992px"
         rtl={false}
         // image="/assets/image/bg-sidebar.jpg"
         className={styles.side_menu}
+        ref={sidebarRef}
+        collapsedWidth="75px"
+        onMouseEnter={() => sidebarMouseEnter()}
+        onMouseLeave={() => sidebarMouseLeave()}
+        onClick={() => sidebarClick()}
       >
         <Menu>
-          <StyledTopMenuItem
-            // onClick={() => {
-            //   collapseSidebar();
-            // }}
-            style={{ textAlign: "center" }}
-          >
-            {" "}
-            <h2>Payment</h2>
-          </StyledTopMenuItem>
-          <StyledSubMenu icon={<AiOutlineHome />} label="Object Management">
-            <StyledMenuItem icon={<FaGenderless/>}>List of properties</StyledMenuItem>
-            <StyledMenuItem icon={<FaGenderless/>}>Add property</StyledMenuItem>
+          {
+            !isMobile &&
+              <StyledTopMenuItem
+                icon={<div className={styles.bg_trendingup}><FiTrendingUp /></div>}
+              >
+                <div className={styles.b_brand}>
+                  <span className={styles.b_text}>Payment</span>
+                  {
+                    !collapsed &&
+                      <div className={`${styles.mobile_menu} ${(clickedMobileMenu ? styles.on : '')}`} onClick={() => clickMobileMenu()}><span></span></div>
+                  }
+                </div>
+              </StyledTopMenuItem>
+          }
+          <StyledSubMenu icon={<FaHome/>} label="Object Management">
+            <StyledMenuItem>List of properties</StyledMenuItem>
+            <StyledMenuItem>Add property</StyledMenuItem>
           </StyledSubMenu>
-          <StyledSubMenu icon={<AiOutlineHome />} label="Industry Management">
-            <StyledMenuItem icon={<FaGenderless/>}>Supplier list</StyledMenuItem>
-            <StyledMenuItem icon={<FaGenderless/>}>Add vendor</StyledMenuItem>
+          <StyledSubMenu icon={<FaRegBuilding />} label="Industry Management">
+            <StyledMenuItem >Supplier list</StyledMenuItem>
+            <StyledMenuItem >Add vendor</StyledMenuItem>
           </StyledSubMenu>
-          <StyledSubMenu icon={<AiOutlineHome />} label="Construction Management">
-            <StyledMenuItem icon={<FaGenderless/>}>Housing construction list</StyledMenuItem>
-            <StyledMenuItem icon={<FaGenderless/>}>Building construction list</StyledMenuItem>
+          <StyledSubMenu icon={<FaGavel />} label="Construction Management">
+            <StyledMenuItem >Housing construction list</StyledMenuItem>
+            <StyledMenuItem >Building construction list</StyledMenuItem>
           </StyledSubMenu>
-          <StyledSubMenu icon={<AiOutlineHome />} label="Input Management">
-            <StyledMenuItem icon={<FaGenderless/>}>Input confirmation</StyledMenuItem>
-            <StyledMenuItem icon={<FaGenderless/>}>Payment confirmation</StyledMenuItem>
+          <StyledSubMenu icon={<FaYenSign />} label="Input Management">
+            <StyledMenuItem >Input confirmation</StyledMenuItem>
+            <StyledMenuItem >Payment confirmation</StyledMenuItem>
           </StyledSubMenu>
-          <StyledSubMenu icon={<AiOutlineHome />} label="Totalling">
-            <StyledMenuItem icon={<FaGenderless/>}>The entire</StyledMenuItem>
-            <StyledMenuItem icon={<FaGenderless/>}>A3 per year by construction</StyledMenuItem>
-            <StyledMenuItem icon={<FaGenderless/>}>Fortifications do not month A4</StyledMenuItem>
+          <StyledSubMenu icon={<FaRegClone />} label="Totalling">
+            <StyledMenuItem >The entire</StyledMenuItem>
+            <StyledMenuItem >A3 per year by construction</StyledMenuItem>
+            <StyledMenuItem >Fortifications do not month A4</StyledMenuItem>
           </StyledSubMenu>
-          <StyledMenuItem icon={<AiOutlineHome />}>Zengin format output</StyledMenuItem>
-          <StyledMenuItem icon={<BsFillMenuButtonWideFill />}>Setting</StyledMenuItem>
-          <StyledMenuItem icon={<AiOutlineUsergroupAdd />} routerLink={<Link to="/users" />}>Users</StyledMenuItem>
+          <StyledMenuItem icon={<FaUniversity />}>Zengin format output</StyledMenuItem>
+          <StyledMenuItem icon={<FaCog />}>Setting</StyledMenuItem>
+          <StyledMenuItem icon={<FaUsers />} routerLink={<Link to="/users" />}>Users</StyledMenuItem>
         </Menu>
       </StyledSidebar>
+      
     </>
   );
 }

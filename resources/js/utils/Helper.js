@@ -115,6 +115,21 @@ export const getImg = (img) => {
     return require(`../assets/${img}`).default
 }
 
+export const checkMobileDevice = () => { 
+    const toMatch = [
+      /Android/i,
+      /webOS/i,
+      /iPhone/i,
+      /iPad/i,
+      /iPod/i,
+      /BlackBerry/i,
+      /Windows Phone/i
+    ];
+    return toMatch.some((toMatchItem) => {
+      return navigator.userAgent.match(toMatchItem);
+    });
+  }
+
 export const useResize = () => {
     const [screenSize, setScreenSize] = useState({
         width: 0,
@@ -127,7 +142,7 @@ export const useResize = () => {
         setScreenSize({
             width: window.innerWidth,
             height: window.innerHeight,
-            isMobile: window.innerWidth < 768,
+            isMobile: window.innerWidth < 992,
             isResponsive: window.innerWidth < 1320
         })
     }

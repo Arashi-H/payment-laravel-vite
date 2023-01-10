@@ -1,4 +1,4 @@
-// @import "./roboto";
+@import "./roboto";
 
 :root {
     --grey: #535353;
@@ -34,8 +34,12 @@ body {
     // background-color: var(--grey);
     // background-color: transparent;
     font-family: Roboto;
-    color: rgba(45, 55, 72, var(--text-opacity));
     height: 100vh;
+    font-size: 14px;
+    color: #888;
+    font-weight: 400;
+    background: #f4f7fa;
+    position: relative;
 }
 
 @media (max-width: 768px) {
