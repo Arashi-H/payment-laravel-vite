@@ -22,6 +22,14 @@ import CreatePayment from '../../components/CreatePayment'
 
 import './Article.scss';
 
+import {
+  startAction,
+  endAction,
+  showToast
+} from '../../actions/common'
+import { logout } from "../../actions/auth";
+import agent from '../../api/'
+
 let t_budgets = [{
       id: 1,
       construction: 'asgserhserhserse',
@@ -273,6 +281,8 @@ let t_constructions = [
 ]
 
 const Article = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const budgetEditTable = useRef()
   const budgetAddTable = useRef()
@@ -283,7 +293,6 @@ const Article = () => {
   const [editArticle, setEditArticle] = useState({})
   const [addArticle, setAddArticle] = useState({name: '', contract_amount: 0, is_house: 1, ended: 0, budget: []})
   const [budgets, setBudgets] = useState([])
-
   
 
   const articleColumns = [
@@ -385,8 +394,35 @@ const Article = () => {
 	});
 
   useEffect(() => {
-    setArticles([...t_articles])
-    setConstructions([...t_constructions])
+    async function getArticleData() {
+      dispatch(startAction())
+      try {
+        const resArticle = await agent.common.getArticle()
+        const resAutoConstruction = await agent.common.getAutoConstruction()
+        console.log('resArticle data=', resArticle)
+        console.log('resAutoConstruction data=', resAutoConstruction)
+        if (resArticle.data.success) {
+          setArticles([...resArticle])
+        }
+
+        if(resAutoConstruction.data.success) {
+          setConstructions([...setConstructions([...t_constructions])])
+        }
+        dispatch(endAction())
+      } catch (error) {
+        if (error.response.status >= 400 && error.response.status <= 415) {
+          dispatch(endAction())
+          dispatch(showToast('error', error.response.data.message))
+          if (error.response.data.message == 'Unauthorized') {
+            localStorage.removeItem('token')
+            dispatch(logout())
+            navigate('/')
+          }
+        }
+      }
+    }
+    getArticleData()
+    
   }, [])
 
   const budgetAddTableInit = () => {

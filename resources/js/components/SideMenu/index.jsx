@@ -238,14 +238,8 @@ const SideMenu = () => {
                 </div>
               </StyledTopMenuItem>
           }
-          <StyledSubMenu icon={<FaHome/>} label="Object Management">
-            <StyledMenuItem routerLink={<Link to="/article" />}>List of properties</StyledMenuItem>
-            <StyledMenuItem routerLink={<Link to="/home" />}>Add property</StyledMenuItem>
-          </StyledSubMenu>
-          <StyledSubMenu icon={<FaRegBuilding />} label="Industry Management">
-            <StyledMenuItem routerLink={<Link to="/company" />} >Supplier list</StyledMenuItem>
-            <StyledMenuItem >Add vendor</StyledMenuItem>
-          </StyledSubMenu>
+          <StyledMenuItem icon={<FaHome/>} routerLink={<Link to="/article" />}>Object Management</StyledMenuItem>
+          <StyledMenuItem icon={<FaRegBuilding />} routerLink={<Link to="/company" />}>Industry Management</StyledMenuItem>
           <StyledSubMenu icon={<FaGavel />} label="Construction Management">
             <StyledMenuItem routerLink={<Link to="/construction" />} >Housing construction list</StyledMenuItem>
             <StyledMenuItem >Building construction list</StyledMenuItem>
