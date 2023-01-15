@@ -15,7 +15,20 @@ class ConstructionsController extends Controller
      */
     public function index()
     {
-        //
+        $constructions = Constructions::all();
+        // if(isset($request->id)) {
+        //     $budgets = $budgets->where('id', $request->id);
+        // }
+        // if(isset($request->name)) {
+        //     $budgets = $budgets->where('name', $request->name);
+        // }
+        // if(isset($request->is_house)) {
+        //     $budgets = $budgets->where('is_house', $request->is_house);
+        // }
+        // if(isset($request->ended)) {
+        //     $budgets = $budgets->where('ended', $request->ended);
+        // }
+		return $constructions->toJson();
     }
 
     /**
@@ -36,7 +49,13 @@ class ConstructionsController extends Controller
      */
     public function store(StoreConstructionsRequest $request)
     {
-        //
+        $data = $request->all();
+        $construction = Companies::create($data);
+
+        return response()->json([
+            'success' => true,
+            'budget' => $construction
+        ]);
     }
 
     /**
@@ -68,9 +87,14 @@ class ConstructionsController extends Controller
      * @param  \App\Models\Constructions  $constructions
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateConstructionsRequest $request, Constructions $constructions)
+    public function update(UpdateConstructionsRequest $request, Constructions $construction)
     {
-        //
+        $construction->update($request->all());
+
+        return response()->json([
+            'success' => true,
+            'construction' => $construction
+        ]);
     }
 
     /**
@@ -79,8 +103,21 @@ class ConstructionsController extends Controller
      * @param  \App\Models\Constructions  $constructions
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Constructions $constructions)
+    public function destroy(Constructions $construction)
     {
-        //
+        $construction->delete();
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function get_for_autocomplete() {
+        $data_for_autocomplete = Constructions::select('id', 'name')->get();
+
+        return response()->json([
+            'success' => true,
+            'data_for_autocomplete' => $data_for_autocomplete
+        ]);
     }
 }
