@@ -43,7 +43,8 @@ class ArticleController extends Controller
 
 		return response()->json([
             'success' => true,
-            'articles' =>$articles
+            'articles' => $articles,
+            'message' => 'Articles successfully scraped.'
         ]);
 	}
 
@@ -70,7 +71,11 @@ class ArticleController extends Controller
 			'is_house' => 'required|numeric'
 		]);
 		if ($validator->fails()) {
-			return response(['errors' => $validator->errors()->all()], 422);
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()->all(),
+                'message' => 'Article validation error.'
+            ]);
 		}
 		// role permission related code should be written here!
         $data['name'] = $request['name'];
@@ -90,7 +95,11 @@ class ArticleController extends Controller
                 'change_amount' => 'required|numeric'
             ]);
             if ($validator->fails()) {
-                return response(['errors' => $validator->errors()->all()], 422);
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()->all(),
+                    'message' => 'Budget validation error.'
+                ]);
             }
 
             $elem['article_id'] = $article['id'];
@@ -101,7 +110,8 @@ class ArticleController extends Controller
         return response()->json([
             'success' => true,
             'article' => $article,
-            'budgets_for_this_article' => $budgets
+            'budgets_for_this_article' => $budgets,
+            'message' => 'Article and Budget successfully added.'
         ]);
 	}
 

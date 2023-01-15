@@ -55,7 +55,8 @@ class AuthController extends Controller
 			'success' => true,
 			'token' => $token,
 			'user' => $user,
-			'roles' => 0
+			'roles' => 0,
+            'message' => 'User registered successfully.'
 		];
 		return response($response, 200);
 	}
@@ -87,7 +88,8 @@ class AuthController extends Controller
 						'success' => true,
 						'token' => $token,
 						'user' => $user,
-						'role' => $role_id
+						'role' => $role_id,
+                        'message' => 'User logged in successfully.'
 					];
 
 					return response($response, 200);
