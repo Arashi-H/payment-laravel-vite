@@ -4,16 +4,21 @@ import { Outlet } from 'react-router-dom';
 import SideMenu from '../SideMenu';
 import Header from '../Header';
 
+import styles from './SideLayout.module.scss';
+
 const SideLayout = () => {
   return (
-    <div
-      id="app"
-      style={({ height: "100vh" }, { display: "flex", flexDirection: "row" })}
-    >
+    <div id="app" className={styles.app}>
       <SideMenu />
-      <main style={({ width: "100%"})}>
+      <main className={styles.main}>
         <Header/>
-        <Outlet />
+        <div className="pcoded-wrapper">
+          <div className="pcoded-content">
+            <div className="pcoded-inner-content">
+              <Outlet />
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   );

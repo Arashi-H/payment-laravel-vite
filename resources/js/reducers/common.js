@@ -9,7 +9,7 @@ const INITIAL_STATE = {
   loading: false,
   showToast: false,
   msgType: '',
-  msgContent: ''
+  msgContent: '',
 }
 
 const reducer = (state = INITIAL_STATE, action) => {

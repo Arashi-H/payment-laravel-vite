@@ -1,5 +1,15 @@
 @import "./roboto";
 
+#navigateTo,
+#pageIndex {
+    height: 35px;
+}
+
+#pageIndex {
+    width: 40px;
+    box-sizing: border-box;
+}
+
 :root {
     --grey: #535353;
     --green: #1efd92;
@@ -40,6 +50,7 @@ body {
     font-weight: 400;
     background: #f4f7fa;
     position: relative;
+    overflow: hidden;
 }
 
 @media (max-width: 768px) {

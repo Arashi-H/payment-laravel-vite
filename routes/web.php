@@ -28,3 +28,15 @@ Route::get('/menu', function () {
 Route::get('/users', function () {
     return view('welcome');
 });
+
+Route::get('/article', function () {
+    return view('welcome');
+});
+
+Route::get('/company', function () {
+    return view('welcome');
+});
+
+Route::get('/construction', function () {
+    return view('welcome');
+});

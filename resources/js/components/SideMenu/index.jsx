@@ -19,6 +19,22 @@ const StyledSidebar = styled(Sidebar)`
     }
   }
 
+  &.ps-collapsed .ps-submenu-expand-icon > span{
+    display: inline-block;
+    -webkit-transition: -webkit-transform 0.3s;
+    transition: transform 0.3s;
+    border-right: 2px solid currentcolor;
+    border-bottom: 2px solid currentcolor;
+    width: 7px;
+    height: 7px;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    border-radius: 0;
+    background-color: transparent;
+  }
+
   &>div {
     color: #a9b7d0;
     box-shadow: 1px 0 20px 0 #3f4d67;
@@ -117,6 +133,11 @@ const StyledMenuItem = styled(MenuItem)`
   border: none;
   border-left: 3px solid transparent;
   user-select: none;
+
+  &.ps-active > a {
+    background: transparent;
+    color: #1dc4e9;
+  }
 
   &:hover {
     background: transparent;
@@ -218,15 +239,15 @@ const SideMenu = () => {
               </StyledTopMenuItem>
           }
           <StyledSubMenu icon={<FaHome/>} label="Object Management">
-            <StyledMenuItem>List of properties</StyledMenuItem>
-            <StyledMenuItem>Add property</StyledMenuItem>
+            <StyledMenuItem routerLink={<Link to="/article" />}>List of properties</StyledMenuItem>
+            <StyledMenuItem routerLink={<Link to="/home" />}>Add property</StyledMenuItem>
           </StyledSubMenu>
           <StyledSubMenu icon={<FaRegBuilding />} label="Industry Management">
-            <StyledMenuItem >Supplier list</StyledMenuItem>
+            <StyledMenuItem routerLink={<Link to="/company" />} >Supplier list</StyledMenuItem>
             <StyledMenuItem >Add vendor</StyledMenuItem>
           </StyledSubMenu>
           <StyledSubMenu icon={<FaGavel />} label="Construction Management">
-            <StyledMenuItem >Housing construction list</StyledMenuItem>
+            <StyledMenuItem routerLink={<Link to="/construction" />} >Housing construction list</StyledMenuItem>
             <StyledMenuItem >Building construction list</StyledMenuItem>
           </StyledSubMenu>
           <StyledSubMenu icon={<FaYenSign />} label="Input Management">

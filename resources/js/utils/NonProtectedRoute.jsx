@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Navigate } from 'react-router'
 import { useNavigate, Link } from 'react-router-dom'
 
 import agent from '../api'
@@ -10,7 +9,7 @@ import { login } from '../actions/auth'
 const NonProtectedRoute = props => {
 
   const dispatch = useDispatch()
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const [token, setToken] = useState(localStorage.getItem('token'))
   const auth = useSelector(state => state.auth)
@@ -24,7 +23,7 @@ const NonProtectedRoute = props => {
           if (res.data.email) {
             console.log(res)
             dispatch(login(res.data))
-            navigate("/home")
+            navigate("/article")
           }
         } catch (error) {
           if (error.response != undefined && error.response.status >= 400 && error.response.status <= 415) {

@@ -1,12 +1,10 @@
 import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Navigate } from 'react-router'
 import { useNavigate } from 'react-router-dom'
 
 import agent from '../api'
 
 import { login, logout } from '../actions/auth'
-// import { changePage, showToast, showChat } from '../actions/common'
 
 const ProtectedRoute = props => {
   const dispatch = useDispatch()
@@ -27,7 +25,7 @@ const ProtectedRoute = props => {
           if (error === 'Error: Network Error') {
             window.location.reload();
           }
-          if (error.response != undefined && error.response.status >= 400 && error.response.status <= 415) {
+          if (error.response != undefined && error.response.status >= 400 && error.response.status <= 500) {
             localStorage.removeItem('token')
             navigate('/')
           }

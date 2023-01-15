@@ -10,6 +10,9 @@ import { ProSidebarProvider } from 'react-pro-sidebar';
 import SideLayout from './components/SideLayout'
 import Login from './pages/Login'
 import Home from './pages/Home'
+import Article from './pages/Article'
+import Company from './pages/Company'
+import Construction from './pages/Construction'
 import Users from './pages/Users'
 
 import Preloading from './components/Preloading'
@@ -32,6 +35,9 @@ export default function App(){
         <Route exact path="/" element={<NonProtectedRoute><Login /></NonProtectedRoute>} />
         <Route element={<SideLayout/>}>
           <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="/article" element={<ProtectedRoute><Article /></ProtectedRoute>} />
+          <Route path="/company" element={<ProtectedRoute><Company /></ProtectedRoute>} />
+          <Route path="/construction" element={<ProtectedRoute><Construction /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
         </Route>
       </Routes>

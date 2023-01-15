@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate, Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useProSidebar } from 'react-pro-sidebar';
-import { AiOutlineMenu } from "react-icons/ai";
+import { BsKey } from "react-icons/bs";
 import { SlLock, SlUser, SlLogout } from "react-icons/sl";
+import { FiMaximize, FiMinimize, FiSettings, FiLogOut, FiUser } from "react-icons/fi";
 
 import styles from './Header.module.scss';
 
-import {
-  logout
-} from '../../actions/auth'
+import {logout} from './../../actions/auth'
+
 const Header = () => {
 
   const dispatch = useDispatch()
@@ -19,52 +19,83 @@ const Header = () => {
   const { collapseSidebar, toggleSidebar, collapsed, toggled, broken, rtl } = useProSidebar()
 
   const [showUserBox, setShowUserBox] = useState(false)
+  const [fullscreen, setFullscreen] = useState(false)
 
-  const toggle = () => {
-    toggleSidebar();
-    if (toggled) {
-      console.log(true);
-      collapseSidebar();
+  const  goInFullscreen = (el) => {
+    if(el.requestFullscreen)
+      el.requestFullscreen();
+    else if(el.mozRequestFullScreen)
+      el.mozRequestFullScreen();
+    else if(el.webkitRequestFullscreen)
+      el.webkitRequestFullscreen();
+    else if(el.msRequestFullscreen)
+      el.msRequestFullscreen();
+  }
+
+  const  goOutFullscreen = () => {
+    if(document.exitFullscreen)
+      document.exitFullscreen();
+    else if(document.mozCancelFullScreen)
+      document.mozCancelFullScreen();
+    else if(document.webkitExitFullscreen)
+      document.webkitExitFullscreen();
+    else if(document.msExitFullscreen)
+      document.msExitFullscreen();
+  }
+
+  const clickFullscreen = () => {
+    if(fullscreen) {
+      setFullscreen(false)
+      goOutFullscreen()
     } else {
-      console.log(false);
-      collapseSidebar();
+      setFullscreen(true)
+      const rootElement = document.getElementById('root')
+      goInFullscreen(rootElement)
     }
-  };
+  }
 
-  const logout = () => {
+  const submitLogout = () => {
     localStorage.removeItem('token')
-    dispatch(logout())
-    navigate('/')
+    dispatch(logout()).then(() => {
+      navigate("/")
+    })
   }
 
   return (
-    <div className={styles.header}>
-      <div className={styles.left}>
-        <button className={styles.toggle_btn} onClick={() => toggle()}><AiOutlineMenu/></button>
-      </div>
-      <div className={styles.right}>
-        <button className={styles.user_btn} onClick={() => setShowUserBox((old) => !old)}>{auth.currentUser.uid}</button>
-        {
-          showUserBox && 
-          <>
-            <div className={styles.user_box}>
-              <div className={styles.user_data_container}>
-                <div className={styles.user_fullname}>{auth.currentUser.first_name + ' ' + auth.currentUser.last_name}</div>
-                <div className={styles.user_uid}>{auth.currentUser.uid}</div>
-              </div>
-              <div className={styles.edit_btn_group}>
-                <Link className={styles.profile_btn} to={'/profile'}><SlLock /> Profile</Link>
-                <Link className={styles.profile_btn} to={'/profile'}><SlUser /> Change Password</Link>
-              </div>
-              <div className={styles.logout_btn_container}>
-                <button className={styles.logout_btn} onClick={() => logout()}><SlLogout /> Logout</button>
-              </div>
+    <header style={{marginLeft: 0, width: '100%'}} className="navbar pcoded-header navbar-expand-lg header-default">
+      <div className="collapse navbar-collapse">
+        <ul className="navbar-nav mr-auto">
+          <li>
+            {
+              fullscreen ?
+                <a className="full-screen" onClick={() => clickFullscreen()}><FiMinimize/></a>
+                :
+                <a className="full-screen" onClick={() => clickFullscreen()}><FiMaximize/></a>
+            }
+          </li>
+        </ul>
+        <ul className="navbar-nav ml-auto">
+          <li>
+            <div className="drp-user dropdown">
+              <button onClick={() => setShowUserBox((old) => !old)} aria-haspopup="true" aria-expanded="true" id="dropdown-basic" type="button" className="dropdown-toggle btn btn-link" style={{paddingRight: '5px'}}><FiSettings/></button>
+              {
+                showUserBox &&
+                  <div aria-labelledby='dropdown-basic' className='profile-notification dropdown-menu show dropdown-menu-right' x-placement='bottom-end' style={{position: 'absolute', willChange: 'transform', top: 0, left: 0, transform: 'translate3d(-249px, 70px, 0px)'}}>
+                    <div className='pro-head'>
+                      <span>{auth.currentUser.first_name + ' ' + auth.currentUser.last_name}</span>
+                      <a className="dud-logout" title="Logout" onClick={() => submitLogout()}><FiLogOut/></a>
+                    </div>
+                    <ul className="pro-body">
+                      <li><Link className='dropdown-item' to={'/profile'}><FiUser />&nbsp;&nbsp;&nbsp;&nbsp;Profile</Link></li>
+                      <li><Link className='dropdown-item' to={'/profile'}><BsKey />&nbsp;&nbsp;&nbsp;&nbsp;Change Password</Link></li>
+                    </ul>
+                  </div>
+              }
             </div>
-            {/* <div className={styles.close_panel} onClick={() => setShowUserBox(false)}></div> */}
-          </>
-        }
+          </li>
+        </ul>
       </div>
-    </div>
+    </header>
   );
 }
 

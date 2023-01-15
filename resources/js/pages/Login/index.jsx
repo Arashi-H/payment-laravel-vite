@@ -37,16 +37,17 @@ const Login = () => {
         dispatch(endAction())
         if (res.data.success) {
           localStorage.setItem('token', res.data.token)
-          dispatch(showToast('success', res.data.message))
+          dispatch(showToast('success', 'Success login.'))
           res.data.user.role = res.data.role
           res.data.user.token = res.data.token
           dispatch(login(res.data.user))
           console.log("res.data.user=", res.data.user)
-          navigate("/home");
+          navigate("/article")
         }
       } catch (error) {
         if (error.response != undefined) {
           if (error.response.status >= 400 && error.response.status <= 500) {
+            console.log(error.response)
             dispatch(endAction())
             dispatch(showToast('error', error.response.data.message))
           }

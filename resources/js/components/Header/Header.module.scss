@@ -6,54 +6,88 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 25px;
+  padding-right: 32px;
 
   .left {
     display: flex;
 
-    .toggle_btn {
-      padding: 10px 15px;
-      background-color: var(--blue);
-      border: 1px solid #fff;
-      border-radius: 5px;
-      font-size: 18px;
-      font-weight: bold;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s;
+    .full_screen {
+      color: #3f4d67;
+      transition: all 0.3s ease-in-out;
 
       &:hover {
-        cursor: pointer;
-        // border-color: transparent;
-        background-color: #fff;
-        color: var(--blue);
+        color: #04a9f5;
       }
     }
+
+    // .toggle_btn {
+    //   padding: 10px 15px;
+    //   background-color: var(--blue);
+    //   border: 1px solid #fff;
+    //   border-radius: 5px;
+    //   font-size: 18px;
+    //   font-weight: bold;
+    //   color: #fff;
+    //   display: flex;
+    //   align-items: center;
+    //   justify-content: center;
+    //   transition: all 0.3s;
+
+    //   &:hover {
+    //     cursor: pointer;
+    //     // border-color: transparent;
+    //     background-color: #fff;
+    //     color: var(--blue);
+    //   }
+    // }
   }
   .right {
     position: relative;
 
     .user_btn {
-      padding: 10px 15px;
-      background-color: #fff;
-      border: 1px solid var(--blue);
-      border-radius: 5px;
-      font-size: 18px;
-      font-weight: bold;
-      color: var(--blue);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s;
+      color: #3f4d67;
+      border: none;
+      font-size: 14px;
+      font-weight: 400;
+      text-decoration: none;
+      white-space: nowrap;
+      text-align: center;
+      vertical-align: middle;
+      user-select: none;
+      background-color: transparent;
+      transition: all 0.3s ease-in-out;
+      // padding: 10px 15px;
+      // background-color: #fff;
+      // border: 1px solid var(--blue);
+      // border-radius: 5px;
+      // font-size: 18px;
+      // font-weight: bold;
+      // color: var(--blue);
+      // display: flex;
+      // align-items: center;
+      // justify-content: center;
+      // transition: all 0.3s;
 
       &:hover {
         cursor: pointer;
-        border-color: transparent;
-        background-color: var(--blue);
-        color: #fff;
+        color: #04a9f5;
+        // border-color: transparent;
+        // background-color: var(--blue);
+        // color: #fff;
+      }
+
+      &::after {
+        content: "\e842";
+        font-family: feather;
+        font-size: 15px;
+        border: none;
+        position: absolute;
+        top: 0;
+        right: -12px;
+        display: inline-block;
+        margin-left: 0.255em;
+        vertical-align: 0.255em;
       }
     }
 
