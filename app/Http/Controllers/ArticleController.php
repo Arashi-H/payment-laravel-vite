@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Article;
 use App\Models\Budgets;
+use App\Models\Constructions;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
 
@@ -33,14 +34,16 @@ class ArticleController extends Controller
             $articles = $articles->where('ended', $request->ended);
         }
 
-        // $budgets = array();
         foreach ($articles as $article) {
-            $budget = Budgets::all()->where('article_id', $article->id);
-            // array_push($budgets, $budget);
-            $article['budget'] = $budget;
+            $budgets = Budgets::all()->where('article_id', $article->id);
+            foreach ($budgets as $budget) {
+                $construction = Constructions::select('name')->where('id', $budget->construction_id)->get();
+                // var_dump(($construction[0])->name); exit();
+                $budget['construction_name'] = $construction[0]->name;
+            }
+            $article['budget'] = $budgets;
         }
 
-        // $articles['budgets'] = $budgets;
 
 		return response()->json([
             'success' => true,
