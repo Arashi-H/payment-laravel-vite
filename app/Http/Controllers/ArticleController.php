@@ -33,13 +33,14 @@ class ArticleController extends Controller
             $articles = $articles->where('ended', $request->ended);
         }
 
-        $budgets = array();
+        // $budgets = array();
         foreach ($articles as $article) {
             $budget = Budgets::all()->where('article_id', $article->id);
-            array_push($budgets, $budget);
+            // array_push($budgets, $budget);
+            $article['budget'] = $budget;
         }
 
-        $articles['budgets'] = $budgets;
+        // $articles['budgets'] = $budgets;
 
 		return response()->json([
             'success' => true,
