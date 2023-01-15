@@ -15,7 +15,20 @@ class TransfersController extends Controller
      */
     public function index()
     {
-        //
+        $transfers = Transfers::all();
+        // if(isset($request->id)) {
+        //     $budgets = $budgets->where('id', $request->id);
+        // }
+        // if(isset($request->name)) {
+        //     $budgets = $budgets->where('name', $request->name);
+        // }
+        // if(isset($request->is_house)) {
+        //     $budgets = $budgets->where('is_house', $request->is_house);
+        // }
+        // if(isset($request->ended)) {
+        //     $budgets = $budgets->where('ended', $request->ended);
+        // }
+		return $transfers->toJson();
     }
 
     /**
@@ -36,7 +49,13 @@ class TransfersController extends Controller
      */
     public function store(StoreTransfersRequest $request)
     {
-        //
+        $data = $request->all();
+        $transfer = Transfers::create($data);
+
+        return response()->json([
+            'success' => true,
+            'transfer' => $transfer
+        ]);
     }
 
     /**
@@ -68,9 +87,14 @@ class TransfersController extends Controller
      * @param  \App\Models\Transfers  $transfers
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTransfersRequest $request, Transfers $transfers)
+    public function update(UpdateTransfersRequest $request, Transfers $transfer)
     {
-        //
+        $transfer->update($request->all());
+
+        return response()->json([
+            'success' => true,
+            'transfer' => $transfer
+        ]);
     }
 
     /**
@@ -79,8 +103,12 @@ class TransfersController extends Controller
      * @param  \App\Models\Transfers  $transfers
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Transfers $transfers)
+    public function destroy(Transfers $transfer)
     {
-        //
+        $transfer->delete();
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

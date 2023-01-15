@@ -40,10 +40,15 @@ class AuthController extends Controller
 		$user->disabled = 0;
 		$user->enabled_at = Carbon::now()->format('Y-m-d H:i:s');
 
-		DB::table('user_role')->insert([
-			'user_id' => $user->id,
-			'role_id' => 0
-		]);
+		// DB::table('user_role')->insert([
+		// 	'user_id' => $user->id,
+		// 	'role_id' => 0
+		// ]);
+
+        // should be determined later
+        $role_id = 1;
+
+        $user->roles()->attach($role_id);
 
 		$token = $user->createToken('Laravel Password Grant Client')->accessToken;
 		$response = [
@@ -74,7 +79,9 @@ class AuthController extends Controller
 					// if (Hash::check($request->password, $user->password) && $user->hasVerifiedEmail()) {
 					$token = $user->createToken('Laravel Password Grant Client')->plainTextToken;
 
-					$role_id = DB::table('user_role')->where('user_id', '=', $user->id)->first()->role_id;
+					// $role_id = DB::table('user_role')->where('user_id', '=', $user->id)->first()->role_id;
+                    $role = json_decode($user->roles);
+                    $role_id = $role[0]->pivot->role_id;
 
 					$response = [
 						'success' => true,

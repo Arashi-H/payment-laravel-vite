@@ -15,7 +15,20 @@ class BudgetsController extends Controller
      */
     public function index()
     {
-        //
+        $budgets = Budgets::all();
+        // if(isset($request->id)) {
+        //     $budgets = $budgets->where('id', $request->id);
+        // }
+        // if(isset($request->name)) {
+        //     $budgets = $budgets->where('name', $request->name);
+        // }
+        // if(isset($request->is_house)) {
+        //     $budgets = $budgets->where('is_house', $request->is_house);
+        // }
+        // if(isset($request->ended)) {
+        //     $budgets = $budgets->where('ended', $request->ended);
+        // }
+		return $budgets->toJson();
     }
 
     /**
@@ -36,7 +49,13 @@ class BudgetsController extends Controller
      */
     public function store(StoreBudgetsRequest $request)
     {
-        //
+        $data = $request->all();
+        $budget = Budgets::create($data);
+
+        return response()->json([
+            'success' => true,
+            'budget' => $budget
+        ]);
     }
 
     /**
@@ -45,7 +64,7 @@ class BudgetsController extends Controller
      * @param  \App\Models\Budgets  $budgets
      * @return \Illuminate\Http\Response
      */
-    public function show(Budgets $budgets)
+    public function show(Budgets $budget)
     {
         //
     }
@@ -56,7 +75,7 @@ class BudgetsController extends Controller
      * @param  \App\Models\Budgets  $budgets
      * @return \Illuminate\Http\Response
      */
-    public function edit(Budgets $budgets)
+    public function edit(Budgets $budget)
     {
         //
     }
@@ -68,9 +87,14 @@ class BudgetsController extends Controller
      * @param  \App\Models\Budgets  $budgets
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateBudgetsRequest $request, Budgets $budgets)
+    public function update(UpdateBudgetsRequest $request, Budgets $budget)
     {
-        //
+        $budget->update($request->all());
+
+        return response()->json([
+            'success' => true,
+            'budget' => $budget
+        ]);
     }
 
     /**
@@ -79,8 +103,12 @@ class BudgetsController extends Controller
      * @param  \App\Models\Budgets  $budgets
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Budgets $budgets)
+    public function destroy(Budgets $budget)
     {
-        //
+        $budget->delete();
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

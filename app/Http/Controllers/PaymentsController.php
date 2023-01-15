@@ -15,7 +15,20 @@ class PaymentsController extends Controller
      */
     public function index()
     {
-        //
+        $payments = Payments::all();
+        // if(isset($request->id)) {
+        //     $budgets = $budgets->where('id', $request->id);
+        // }
+        // if(isset($request->name)) {
+        //     $budgets = $budgets->where('name', $request->name);
+        // }
+        // if(isset($request->is_house)) {
+        //     $budgets = $budgets->where('is_house', $request->is_house);
+        // }
+        // if(isset($request->ended)) {
+        //     $budgets = $budgets->where('ended', $request->ended);
+        // }
+		return $payments->toJson();
     }
 
     /**
@@ -36,7 +49,13 @@ class PaymentsController extends Controller
      */
     public function store(StorePaymentsRequest $request)
     {
-        //
+        $data = $request->all();
+        $payment = Payments::create($data);
+
+        return response()->json([
+            'success' => true,
+            'payment' => $payment
+        ]);
     }
 
     /**
@@ -68,9 +87,14 @@ class PaymentsController extends Controller
      * @param  \App\Models\Payments  $payments
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePaymentsRequest $request, Payments $payments)
+    public function update(UpdatePaymentsRequest $request, Payments $payment)
     {
-        //
+        $payment->update($request->all());
+
+        return response()->json([
+            'success' => true,
+            'payment' => $payment
+        ]);
     }
 
     /**
@@ -79,8 +103,12 @@ class PaymentsController extends Controller
      * @param  \App\Models\Payments  $payments
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Payments $payments)
+    public function destroy(Payments $payment)
     {
-        //
+        $payment->delete();
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

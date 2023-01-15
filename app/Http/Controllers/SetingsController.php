@@ -15,7 +15,20 @@ class SetingsController extends Controller
      */
     public function index()
     {
-        //
+        $setings = Setings::all();
+        // if(isset($request->id)) {
+        //     $budgets = $budgets->where('id', $request->id);
+        // }
+        // if(isset($request->name)) {
+        //     $budgets = $budgets->where('name', $request->name);
+        // }
+        // if(isset($request->is_house)) {
+        //     $budgets = $budgets->where('is_house', $request->is_house);
+        // }
+        // if(isset($request->ended)) {
+        //     $budgets = $budgets->where('ended', $request->ended);
+        // }
+		return $setings->toJson();
     }
 
     /**
@@ -36,7 +49,13 @@ class SetingsController extends Controller
      */
     public function store(StoreSetingsRequest $request)
     {
-        //
+        $data = $request->all();
+        $seting = Setings::create($data);
+
+        return response()->json([
+            'success' => true,
+            'seting' => $seting
+        ]);
     }
 
     /**
@@ -68,9 +87,14 @@ class SetingsController extends Controller
      * @param  \App\Models\Setings  $setings
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateSetingsRequest $request, Setings $setings)
+    public function update(UpdateSetingsRequest $request, Setings $seting)
     {
-        //
+        $seting->update($request->all());
+
+        return response()->json([
+            'success' => true,
+            'seting' => $seting
+        ]);
     }
 
     /**
@@ -79,8 +103,12 @@ class SetingsController extends Controller
      * @param  \App\Models\Setings  $setings
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Setings $setings)
+    public function destroy(Setings $seting)
     {
-        //
+        $seting->delete();
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

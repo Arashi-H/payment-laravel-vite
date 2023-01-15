@@ -15,7 +15,20 @@ class CompaniesController extends Controller
      */
     public function index()
     {
-        //
+        $companies = Companies::all();
+        // if(isset($request->id)) {
+        //     $budgets = $budgets->where('id', $request->id);
+        // }
+        // if(isset($request->name)) {
+        //     $budgets = $budgets->where('name', $request->name);
+        // }
+        // if(isset($request->is_house)) {
+        //     $budgets = $budgets->where('is_house', $request->is_house);
+        // }
+        // if(isset($request->ended)) {
+        //     $budgets = $budgets->where('ended', $request->ended);
+        // }
+		return $companies->toJson();
     }
 
     /**
@@ -36,7 +49,13 @@ class CompaniesController extends Controller
      */
     public function store(StoreCompaniesRequest $request)
     {
-        //
+        $data = $request->all();
+        $company = Companies::create($data);
+
+        return response()->json([
+            'success' => true,
+            'company' => $company
+        ]);
     }
 
     /**
@@ -68,9 +87,14 @@ class CompaniesController extends Controller
      * @param  \App\Models\Companies  $companies
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCompaniesRequest $request, Companies $companies)
+    public function update(UpdateCompaniesRequest $request, Companies $company)
     {
-        //
+        $company->update($request->all());
+
+        return response()->json([
+            'success' => true,
+            'company' => $company
+        ]);
     }
 
     /**
@@ -79,8 +103,12 @@ class CompaniesController extends Controller
      * @param  \App\Models\Companies  $companies
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Companies $companies)
+    public function destroy(Companies $company)
     {
-        //
+        $company->delete();
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

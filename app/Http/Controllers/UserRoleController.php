@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\UserRole;
 
-class UserController extends Controller
+class UserRoleController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $user_roles = UserRole::all();
         // if(isset($request->id)) {
         //     $budgets = $budgets->where('id', $request->id);
         // }
@@ -23,37 +22,36 @@ class UserController extends Controller
         // if(isset($request->ended)) {
         //     $budgets = $budgets->where('ended', $request->ended);
         // }
-		return $users->toJson();
+		return $user_roles->toJson();
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $user = User::create($data);
+        $user_role = UserRole::create($data);
 
         return response()->json([
             'success' => true,
-            'user' => $user
+            'user_role' => $user_role
         ]);
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, UserRole $user_role)
     {
-        $user->update($request->all());
+        $user_role->update($request->all());
 
         return response()->json([
             'success' => true,
-            'user' => $user
+            'user_role' => $user_role
         ]);
     }
 
-    public function destroy(User $user)
+    public function destroy(UserRole $user_role)
     {
-        $user->delete();
+        $user_role->delete();
 
         return response()->json([
             'success' => true
         ]);
     }
-
 }
