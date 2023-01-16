@@ -63,6 +63,16 @@ class BudgetsController extends Controller
         $data = $request->all();
         $budget = Budgets::create($data);
 
+        $table = TableMap::select('*')->where('name', 'article')->get();
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $article->id;
+        $log['action_time'] = $article->created_at;
+        $log['action_type'] = 1;
+
+        $system_log = SystemLog::create($log);
+
         return response()->json([
             'success' => true,
             'data' => $budget
@@ -102,6 +112,18 @@ class BudgetsController extends Controller
     {
         $user = Auth::user();
         $request['updated_user_id'] = $user->id;
+        $budget['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
+
+        $table = TableMap::select('*')->where('name', 'budget')->get();
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $budget->id;
+        $log['action_time'] = $budget->updated_at;
+        $log['action_type'] = 2;
+
+        $system_log = SystemLog::create($log);
+
         $budget->update($request->all());
 
         return response()->json([
@@ -118,7 +140,21 @@ class BudgetsController extends Controller
      */
     public function destroy(Budgets $budget)
     {
-        $budget->delete();
+        $user = Auth::user();
+        $request['updated_user_id'] = $user->id;
+
+        $table = TableMap::select('*')->where('name', 'budget')->get();
+        $budget['deleted'] = Carbon::now()->format('Y-m-d H:i:s');
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $budget->id;
+        $log['action_time'] = $budget->deleted;
+        $log['action_type'] = 3;
+
+		$budget->update(['deleted' => $budget['deleted']]);
+
+        $system_log = SystemLog::create($log);
 
         return response()->json([
             'success' => true

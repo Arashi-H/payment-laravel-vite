@@ -45,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('companies', CompaniesController::class);
 
     Route::get('constructions/autocomplete', [ConstructionsController::class, 'get_for_autocomplete']);
+    // Route::get('constructions/run', [ConstructionsController::class, 'run']);
     Route::apiResource('constructions', ConstructionsController::class);
 
     Route::apiResource('payments', PaymentsController::class);

@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Article;
+use App\Models\SystemLog;
+use App\Models\TableMap;
 use App\Models\Budgets;
 use App\Models\Constructions;
 use App\Http\Requests\StoreArticleRequest;
@@ -39,15 +41,25 @@ class ArticleController extends Controller
         foreach ($articles as $article) {
             $budgets = Budgets::select('*')->where('article_id', $article->id)->get();
             foreach ($budgets as $budget) {
-                $construction = Constructions::select('*')->where('id', $budget->construction_id)->get();
-                $budget['construction_name'] = $construction[0]->name;
+                $construction = Constructions::select('*')->where('id', $budget->construction_id)->first();
+                if (!empty($construction)) {
+                    $budget['construction_name'] = $construction->name;
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'error' => $budget->construction_id,
+                        'message' => 'No such construction id'
+                    ]);
+                }
             }
             $article['budget'] = $budgets;
-            $user_created = User::select('*')->where('id', $article->created_user_id)->get();
-            $user_updated = User::select('*')->where('id', $article->updated_user_id)->get();
-            $article['created_user_name'] = $user_created[0]->first_name.' '.$user_created[0]->last_name;
-            $article['updated_user_name'] = $user_updated[0]->first_name.' '.$user_updated[0]->last_name;
+            $user_created = User::select('*')->where('id', $article->created_user_id)->first();
+            $user_updated = User::select('*')->where('id', $article->updated_user_id)->first();
+            $article['created_user_name'] = $user_created->first_name.' '.$user_created->last_name;
+            $article['updated_user_name'] = $user_updated->first_name.' '.$user_updated->last_name;
+            // var_dump($article);
         }
+        //  exit();
 
 
 		return response()->json([
@@ -123,6 +135,16 @@ class ArticleController extends Controller
             array_push($budgets, $budget);
         }
 
+        $table = TableMap::select('*')->where('name', 'article')->get();
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $article->id;
+        $log['action_time'] = $article->created_at;
+        $log['action_type'] = 1;
+
+        $system_log = SystemLog::create($log);
+
         return response()->json([
             'success' => true,
             'article' => $article,
@@ -163,6 +185,18 @@ class ArticleController extends Controller
 	{
         $user = Auth::user();
         $request['updated_user_id'] = $user->id;
+        $article['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
+
+        $table = TableMap::select('*')->where('name', 'article')->get();
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $article->id;
+        $log['action_time'] = $article->updated_at;
+        $log['action_type'] = 2;
+
+        $system_log = SystemLog::create($log);
+
         $article->update($request->all());
 
         return response()->json([
@@ -179,7 +213,21 @@ class ArticleController extends Controller
 	 */
 	public function destroy(Article $article)
 	{
-		$article->delete();
+        $user = Auth::user();
+        $request['updated_user_id'] = $user->id;
+
+        $table = TableMap::select('*')->where('name', 'article')->get();
+        $article['deleted'] = Carbon::now()->format('Y-m-d H:i:s');
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $article->id;
+        $log['action_time'] = $article->deleted;
+        $log['action_type'] = 3;
+
+		$article->update(['deleted' => $article['deleted']]);
+
+        $system_log = SystemLog::create($log);
 
         return response()->json([
             'success' => true
