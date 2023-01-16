@@ -24,6 +24,12 @@ const UpdateHistory = (props) => {
     }
   }, [])
 
+  const dateFormatting = (date) => {
+    var m = new Date(date);
+    var dateString = m.getUTCFullYear() +"/"+ (m.getUTCMonth()+1) +"/"+ m.getUTCDate() + " " + m.getUTCHours() + ":" + m.getUTCMinutes() + ":" + m.getUTCSeconds();
+    return dateString
+  }
+
   return (
     <div className="update_history" ref={historyRef}>
       <div className="history_container">
@@ -44,7 +50,7 @@ const UpdateHistory = (props) => {
               </li>
               <li>
                 <p className="label">Create Date</p>
-                <p className="item">{props.created_at}</p>
+                <p className="item">{dateFormatting(props.created_at)}</p>
               </li>
               <li>
                 <p className="label">Update Date</p>
@@ -67,11 +73,11 @@ const UpdateHistory = (props) => {
               </li>
               <li>
                 <p className="label">Create Date</p>
-                <p className="item">{props.created_at}</p>
+                <p className="item">{dateFormatting(props.created_at)}</p>
               </li>
               <li>
                 <p className="label">Update Date</p>
-                <p className="item">{props.updated_at}</p>
+                <p className="item">{dateFormatting(props.updated_at)}</p>
               </li>
             </ul>
         }

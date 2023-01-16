@@ -94,9 +94,9 @@ const Company = () => {
     dispatch(startAction())
     try {
       const resCompany = await agent.common.getCompany()
-      console.log('resCompany data=', resCompany.data)
+      console.log('resCompany data=', resCompany.data.data)
       // if (resCompany.data.success) {
-        setCompanies([...resCompany.data])
+        setCompanies([...resCompany.data.data])
       // }
       dispatch(endAction())
     } catch (error) {

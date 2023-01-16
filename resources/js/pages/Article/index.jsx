@@ -20,6 +20,7 @@ import { IoMdRemoveCircle, IoMdAddCircle } from "react-icons/io"
 
 import CreatePayment from '../../components/CreatePayment'
 import UpdateHistory from "../../components/UpdateHistory";
+import AutoConstruction from "../../components/AutoConstruction";
 
 import './Article.scss';
 
@@ -44,6 +45,8 @@ const Article = () => {
   const [editArticle, setEditArticle] = useState({})
   const [addArticle, setAddArticle] = useState({name: '', contract_amount: 0, is_house: 1, ended: 0, budget: []})
   const [budgets, setBudgets] = useState([])
+
+  const [firstLoadTable, setFirstLoadTable] = useState(true)
 
   const articleColumns = [
     {
@@ -179,6 +182,12 @@ const Article = () => {
     getArticleData()
   }, [])
 
+  useEffect(() => {
+    if(!firstLoadTable) {
+      renderAddBudget()
+    }
+  })
+
   const budgetAddTableInit = () => {
     const footerTemplate = document.createElement('template'),
 			headerTemplate = document.createElement('template');
@@ -252,6 +261,29 @@ const Article = () => {
     )
   }
 
+  const renderAddBudget = () => {
+    ReactDOM.render(
+      <AutoConstruction constructions={constructions} />,
+      document.querySelector(`#construction_add_input`)
+    )
+    ReactDOM.render(
+      <NumberInput />,
+      document.querySelector(`#cost_add_input`)
+    )
+    ReactDOM.render(
+      <NumberInput />,
+      document.querySelector(`#contract_add_input`)
+    )
+    ReactDOM.render(
+      <NumberInput />,
+      document.querySelector(`#change_add_input`)
+    )
+    ReactDOM.render(
+      <a className="table_budget_add_btn" ><IoMdAddCircle /></a>,
+      document.querySelector(`#budget_add_btn`)
+    )
+  }
+
   const budgetEditTableInit = () => {
     const footerTemplate = document.createElement('template'),
 			headerTemplate = document.createElement('template');
@@ -282,6 +314,7 @@ const Article = () => {
 
 		budgetEditTable.current.footerRow = footerTemplate.id;
 		budgetEditTable.current.headerRow = headerTemplate.id;
+    console.log('budgetEditTable.current=', budgetEditTable.current)
 
     let total_cost = 0
     let total_contract_amount = 0
@@ -296,32 +329,7 @@ const Article = () => {
     document.querySelector(`#totalContract`).innerHTML = total_contract_amount.toLocaleString("en-US")
     document.querySelector(`#totalChange`).innerHTML = total_change_amount.toLocaleString("en-US")
 
-    ReactDOM.render(
-      <DropDownList className="budget_add_input" selectedIndexes={[0]} filterable>
-        {
-          constructions.map((construction, idx) => {
-            return <ListItem value={"" + construction.id} key={idx}>{construction.name}</ListItem>
-          })
-        }
-      </DropDownList>,
-      document.querySelector(`#construction_add_input`)
-    )
-    ReactDOM.render(
-      <NumberInput />,
-      document.querySelector(`#cost_add_input`)
-    )
-    ReactDOM.render(
-      <NumberInput />,
-      document.querySelector(`#contract_add_input`)
-    )
-    ReactDOM.render(
-      <NumberInput />,
-      document.querySelector(`#change_add_input`)
-    )
-    ReactDOM.render(
-      <a className="table_budget_add_btn" ><IoMdAddCircle /></a>,
-      document.querySelector(`#budget_add_btn`)
-    )
+    setFirstLoadTable(false)
   }
 
   const handleArticleTableClick = (event) => {
