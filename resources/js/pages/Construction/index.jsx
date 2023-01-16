@@ -82,9 +82,9 @@ const Construction = () => {
       dispatch(startAction())
       try {
         const resConstruction = await agent.common.getConstruction(house)
-        console.log('resConstruction data=', resConstruction.data)
+        console.log('resConstruction data=', resConstruction.data.data)
         // if (resConstruction.data.success) {
-          setConstructions([...resConstruction.data])
+          setConstructions([...resConstruction.data.data])
         // }
         dispatch(endAction())
       } catch (error) {
