@@ -26,7 +26,7 @@ class ConstructionsController extends Controller
         //     $budgets = $budgets->where('name', $request->name);
         // }
         if(isset($request->house)) {
-            $constructions = $constructions->where('house', $request->house);
+            $constructions = $constructions->where('house', $request->house)->values();
         }
         // if(isset($request->ended)) {
         //     $budgets = $budgets->where('ended', $request->ended);
@@ -39,6 +39,7 @@ class ConstructionsController extends Controller
         }
 		return response()->json([
             'success' => true,
+            // 'data' => array_values($constructions->toArray())
             'data' => $constructions
         ]);
     }

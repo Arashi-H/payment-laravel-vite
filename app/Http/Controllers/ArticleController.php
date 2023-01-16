@@ -26,16 +26,16 @@ class ArticleController extends Controller
 	{
 		$articles = Article::all();
         if(isset($request->id)) {
-            $articles = $articles->where('id', $request->id);
+            $articles = $articles->where('id', $request->id)->values();
         }
         if(isset($request->name)) {
-            $articles = $articles->where('name', $request->name);
+            $articles = $articles->where('name', $request->name)->values();
         }
         if(isset($request->is_house)) {
-            $articles = $articles->where('is_house', $request->is_house);
+            $articles = $articles->where('is_house', $request->is_house)->values();
         }
         if(isset($request->ended)) {
-            $articles = $articles->where('ended', $request->ended);
+            $articles = $articles->where('ended', $request->ended)->values();
         }
 
         foreach ($articles as $article) {
