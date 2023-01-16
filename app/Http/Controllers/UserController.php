@@ -23,7 +23,10 @@ class UserController extends Controller
         // if(isset($request->ended)) {
         //     $budgets = $budgets->where('ended', $request->ended);
         // }
-		return $users->toJson();
+		return response()->json([
+            'success' => true,
+            'data' => $users
+        ]);
     }
 
     public function store(Request $request)
@@ -33,7 +36,7 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-            'user' => $user
+            'data' => $user
         ]);
     }
 

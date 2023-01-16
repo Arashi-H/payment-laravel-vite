@@ -28,7 +28,10 @@ class ConstructionsController extends Controller
         // if(isset($request->ended)) {
         //     $budgets = $budgets->where('ended', $request->ended);
         // }
-		return $constructions->toJson();
+		return response()->json([
+            'success' => true,
+            'data' => $constructions
+        ]);
     }
 
     /**
@@ -54,7 +57,7 @@ class ConstructionsController extends Controller
 
         return response()->json([
             'success' => true,
-            'budget' => $construction
+            'data' => $construction
         ]);
     }
 
@@ -93,7 +96,7 @@ class ConstructionsController extends Controller
 
         return response()->json([
             'success' => true,
-            'construction' => $construction
+            'data' => $construction
         ]);
     }
 
@@ -117,7 +120,7 @@ class ConstructionsController extends Controller
 
         return response()->json([
             'success' => true,
-            'data_for_autocomplete' => $data_for_autocomplete
+            'data' => $data_for_autocomplete
         ]);
     }
 }

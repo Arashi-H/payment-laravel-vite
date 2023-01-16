@@ -28,7 +28,10 @@ class SetingsController extends Controller
         // if(isset($request->ended)) {
         //     $budgets = $budgets->where('ended', $request->ended);
         // }
-		return $setings->toJson();
+		return response()->json([
+            'success' => true,
+            'data' => $setings
+        ]);
     }
 
     /**
@@ -54,7 +57,7 @@ class SetingsController extends Controller
 
         return response()->json([
             'success' => true,
-            'seting' => $seting
+            'data' => $seting
         ]);
     }
 
@@ -93,7 +96,7 @@ class SetingsController extends Controller
 
         return response()->json([
             'success' => true,
-            'seting' => $seting
+            'data' => $seting
         ]);
     }
 

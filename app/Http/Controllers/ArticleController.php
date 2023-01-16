@@ -46,7 +46,7 @@ class ArticleController extends Controller
 
 		return response()->json([
             'success' => true,
-            'articles' => $articles,
+            'data' => $articles,
             'message' => 'Articles successfully scraped.'
         ]);
 	}
@@ -112,8 +112,6 @@ class ArticleController extends Controller
 
         return response()->json([
             'success' => true,
-            'article' => $article,
-            'budgets_for_this_article' => $budgets,
             'message' => 'Article and Budget successfully added.'
         ]);
 	}
@@ -152,7 +150,7 @@ class ArticleController extends Controller
 
         return response()->json([
             'success' => true,
-            'article' => $article
+            'data' => $article
         ]);
 	}
 

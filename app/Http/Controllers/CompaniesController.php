@@ -28,7 +28,10 @@ class CompaniesController extends Controller
         // if(isset($request->ended)) {
         //     $budgets = $budgets->where('ended', $request->ended);
         // }
-		return $companies->toJson();
+		return response()->json([
+            'success' => true,
+            'data' => $companies,
+        ]);
     }
 
     /**
@@ -54,7 +57,8 @@ class CompaniesController extends Controller
 
         return response()->json([
             'success' => true,
-            'company' => $company
+            'data' => $company,
+            'message' => 'Company successfully added'
         ]);
     }
 
@@ -93,7 +97,7 @@ class CompaniesController extends Controller
 
         return response()->json([
             'success' => true,
-            'company' => $company
+            'data' => $company
         ]);
     }
 

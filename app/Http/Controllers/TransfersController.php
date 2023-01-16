@@ -28,7 +28,10 @@ class TransfersController extends Controller
         // if(isset($request->ended)) {
         //     $budgets = $budgets->where('ended', $request->ended);
         // }
-		return $transfers->toJson();
+		return response()->json([
+            'success' => true,
+            'data' => $transfers
+        ]);
     }
 
     /**
@@ -54,7 +57,7 @@ class TransfersController extends Controller
 
         return response()->json([
             'success' => true,
-            'transfer' => $transfer
+            'data' => $transfer
         ]);
     }
 
@@ -93,7 +96,7 @@ class TransfersController extends Controller
 
         return response()->json([
             'success' => true,
-            'transfer' => $transfer
+            'data' => $transfer
         ]);
     }
 

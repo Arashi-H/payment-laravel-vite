@@ -28,7 +28,10 @@ class PaymentsController extends Controller
         // if(isset($request->ended)) {
         //     $budgets = $budgets->where('ended', $request->ended);
         // }
-		return $payments->toJson();
+		return response()->json([
+            'success' => true,
+            'data' => $payments
+        ]);
     }
 
     /**
@@ -54,7 +57,7 @@ class PaymentsController extends Controller
 
         return response()->json([
             'success' => true,
-            'payment' => $payment
+            'data' => $payment
         ]);
     }
 
@@ -93,7 +96,7 @@ class PaymentsController extends Controller
 
         return response()->json([
             'success' => true,
-            'payment' => $payment
+            'data' => $payment
         ]);
     }
 

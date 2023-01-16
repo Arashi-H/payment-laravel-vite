@@ -22,7 +22,10 @@ class UserRoleController extends Controller
         // if(isset($request->ended)) {
         //     $budgets = $budgets->where('ended', $request->ended);
         // }
-		return $user_roles->toJson();
+        return response()->json([
+            'success' => true,
+            'data' => $user_roles
+        ]);
     }
 
     public function store(Request $request)
@@ -32,7 +35,7 @@ class UserRoleController extends Controller
 
         return response()->json([
             'success' => true,
-            'user_role' => $user_role
+            'data' => $user_role
         ]);
     }
 
@@ -42,7 +45,7 @@ class UserRoleController extends Controller
 
         return response()->json([
             'success' => true,
-            'user_role' => $user_role
+            'data' => $user_role
         ]);
     }
 
