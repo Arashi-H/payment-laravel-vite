@@ -41,15 +41,25 @@ class ArticleController extends Controller
         foreach ($articles as $article) {
             $budgets = Budgets::select('*')->where('article_id', $article->id)->get();
             foreach ($budgets as $budget) {
-                $construction = Constructions::select('*')->where('id', $budget->construction_id)->get();
-                $budget['construction_name'] = $construction[0]->name;
+                $construction = Constructions::select('*')->where('id', $budget->construction_id)->first();
+                if (!empty($construction)) {
+                    $budget['construction_name'] = $construction->name;
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'error' => $budget->construction_id,
+                        'message' => 'No such construction id'
+                    ]);
+                }
             }
             $article['budget'] = $budgets;
-            $user_created = User::select('*')->where('id', $article->created_user_id)->get();
-            $user_updated = User::select('*')->where('id', $article->updated_user_id)->get();
-            $article['created_user_name'] = $user_created[0]->first_name.' '.$user_created[0]->last_name;
-            $article['updated_user_name'] = $user_updated[0]->first_name.' '.$user_updated[0]->last_name;
+            $user_created = User::select('*')->where('id', $article->created_user_id)->first();
+            $user_updated = User::select('*')->where('id', $article->updated_user_id)->first();
+            $article['created_user_name'] = $user_created->first_name.' '.$user_created->last_name;
+            $article['updated_user_name'] = $user_updated->first_name.' '.$user_updated->last_name;
+            // var_dump($article);
         }
+        //  exit();
 
 
 		return response()->json([

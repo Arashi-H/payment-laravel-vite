@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Constructions;
@@ -15,7 +16,7 @@ class ConstructionsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $constructions = Constructions::all();
         // if(isset($request->id)) {
@@ -31,16 +32,30 @@ class ConstructionsController extends Controller
         //     $budgets = $budgets->where('ended', $request->ended);
         // }
         foreach ($constructions as $construction) {
-            $user_created = User::select('*')->where('id', $construction->created_user_id)->get();
-            $user_updated = User::select('*')->where('id', $construction->updated_user_id)->get();
-            $construction['created_user_name'] = $user_created[0]->first_name.' '.$user_created[0]->last_name;
-            $construction['updated_user_name'] = $user_updated[0]->first_name.' '.$user_updated[0]->last_name;
+            $user_created = User::select('*')->where('id', $construction->created_user_id)->first();
+            $user_updated = User::select('*')->where('id', $construction->updated_user_id)->first();
+            $construction['created_user_name'] = $user_created->first_name.' '.$user_created->last_name;
+            $construction['updated_user_name'] = $user_updated->first_name.' '.$user_updated->last_name;
         }
 		return response()->json([
             'success' => true,
             'data' => $constructions
         ]);
     }
+
+    // public function run() {
+    //     $constructions = Constructions::all();
+    //     // var_dump($constructions); exit();
+    //     foreach ($constructions as $construction) {
+
+    //         // $construction->update(['created_user_id' => 2]);
+    //         $construction->update(['updated_user_id' => 2]);
+    //     }
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => $constructions
+    //     ]);
+    // }
 
     /**
      * Show the form for creating a new resource.
