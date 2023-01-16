@@ -35,13 +35,11 @@ class ArticleController extends Controller
         }
 
         foreach ($articles as $article) {
-            $budgets = Budgets::all()->where('article_id', $article->id);
+            $budgets = Budgets::select('*')->where('article_id', $article->id)->get();
             foreach ($budgets as $budget) {
                 $construction = Constructions::select('name')->where('id', $budget->construction_id)->get();
-                // var_dump(($construction[0])->name); exit();
                 $budget['construction_name'] = $construction[0]->name;
             }
-            var_dump($budgets); exit();
             $article['budget'] = $budgets;
         }
 
