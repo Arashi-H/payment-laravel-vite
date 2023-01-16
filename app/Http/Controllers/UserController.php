@@ -23,6 +23,9 @@ class UserController extends Controller
         // if(isset($request->ended)) {
         //     $budgets = $budgets->where('ended', $request->ended);
         // }
+        foreach ($users as $user) {
+            $user['role'] = $user->roles[0]->id;
+        }
 		return response()->json([
             'success' => true,
             'data' => $users

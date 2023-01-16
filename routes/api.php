@@ -65,6 +65,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     $user = $request->user();
-    $user['role'] = DB::table('user_roles')->where('user_id', '=', $user->id)->first()->role_id;
+    $user['role'] = $user->roles[0]->id;
     return $user;
 });
