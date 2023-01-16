@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use App\Models\Setings;
 use App\Http\Requests\StoreSetingsRequest;
 use App\Http\Requests\UpdateSetingsRequest;

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use App\Models\Companies;
 use App\Http\Requests\StoreCompaniesRequest;
 use App\Http\Requests\UpdateCompaniesRequest;
@@ -28,6 +30,12 @@ class CompaniesController extends Controller
         // if(isset($request->ended)) {
         //     $budgets = $budgets->where('ended', $request->ended);
         // }
+        foreach ($companies as $company) {
+            $user_created = User::select('*')->where('id', $company->created_user_id)->get();
+            $user_updated = User::select('*')->where('id', $company->updated_user_id)->get();
+            $company['created_user_name'] = $user_created[0]->first_name.' '.$user_created[0]->last_name;
+            $company['updated_user_name'] = $user_updated[0]->first_name.' '.$user_updated[0]->last_name;
+        }
 		return response()->json([
             'success' => true,
             'data' => $companies,
@@ -53,6 +61,11 @@ class CompaniesController extends Controller
     public function store(StoreCompaniesRequest $request)
     {
         $data = $request->all();
+
+        $user = Auth::user();
+        $data['created_user_id'] = $user->id;
+        $data['updated_user_id'] = $user->id;
+
         $company = Companies::create($data);
 
         return response()->json([
@@ -93,6 +106,8 @@ class CompaniesController extends Controller
      */
     public function update(UpdateCompaniesRequest $request, Companies $company)
     {
+        $user = Auth::user();
+        $request['updated_user_id'] = $user->id;
         $company->update($request->all());
 
         return response()->json([

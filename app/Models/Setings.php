@@ -21,8 +21,10 @@ class Setings extends Model
 		'value',
 		'note',
 		'validation',
-		'created',
-		'modified',
+		'created_at',
+        'created_user_id',
+		'updated_at',
+        'updated_user_id',
 		'deleted',
 	];
 }

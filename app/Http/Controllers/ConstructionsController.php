@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use App\Models\Constructions;
 use App\Http\Requests\StoreConstructionsRequest;
 use App\Http\Requests\UpdateConstructionsRequest;
@@ -22,12 +24,18 @@ class ConstructionsController extends Controller
         // if(isset($request->name)) {
         //     $budgets = $budgets->where('name', $request->name);
         // }
-        // if(isset($request->is_house)) {
-        //     $budgets = $budgets->where('is_house', $request->is_house);
-        // }
+        if(isset($request->house)) {
+            $constructions = $constructions->where('house', $request->house);
+        }
         // if(isset($request->ended)) {
         //     $budgets = $budgets->where('ended', $request->ended);
         // }
+        foreach ($constructions as $construction) {
+            $user_created = User::select('*')->where('id', $construction->created_user_id)->get();
+            $user_updated = User::select('*')->where('id', $construction->updated_user_id)->get();
+            $construction['created_user_name'] = $user_created[0]->first_name.' '.$user_created[0]->last_name;
+            $construction['updated_user_name'] = $user_updated[0]->first_name.' '.$user_updated[0]->last_name;
+        }
 		return response()->json([
             'success' => true,
             'data' => $constructions
@@ -53,7 +61,12 @@ class ConstructionsController extends Controller
     public function store(StoreConstructionsRequest $request)
     {
         $data = $request->all();
-        $construction = Companies::create($data);
+
+        $user = Auth::user();
+        $data['created_user_id'] = $user->id;
+        $data['updated_user_id'] = $user->id;
+
+        $construction = Constructions::create($data);
 
         return response()->json([
             'success' => true,
@@ -92,6 +105,8 @@ class ConstructionsController extends Controller
      */
     public function update(UpdateConstructionsRequest $request, Constructions $construction)
     {
+        $user = Auth::user();
+        $request['updated_user_id'] = $user->id;
         $construction->update($request->all());
 
         return response()->json([

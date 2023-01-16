@@ -23,8 +23,10 @@ class Payments extends Model
 		'company_id',
 		'cost',
 		'is_cash',
-		'created',
-		'modified',
+		'created_at',
+        'created_user_id',
+		'updated_at',
+        'updated_user_id',
 		'deleted',
 	];
 

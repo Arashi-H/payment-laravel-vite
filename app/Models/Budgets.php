@@ -22,8 +22,10 @@ class Budgets extends Model
 		'cost',
 		'contract_amount',
 		'change_amount',
-		'created',
-		'modified',
+		'created_at',
+        'created_user_id',
+		'updated_at',
+        'updated_user_id',
 		'deleted',
 	];
 

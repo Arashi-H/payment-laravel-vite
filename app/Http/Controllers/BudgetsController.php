@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use App\Models\Budgets;
 use App\Http\Requests\StoreBudgetsRequest;
 use App\Http\Requests\UpdateBudgetsRequest;
@@ -28,6 +30,12 @@ class BudgetsController extends Controller
         // if(isset($request->ended)) {
         //     $budgets = $budgets->where('ended', $request->ended);
         // }
+        foreach ($budgets as $budget) {
+            $user_created = User::select('*')->where('id', $budget->created_user_id)->get();
+            $user_updated = User::select('*')->where('id', $budget->updated_user_id)->get();
+            $budget['created_user_name'] = $user_created[0]->first_name.' '.$user_created[0]->last_name;
+            $budget['updated_user_name'] = $user_updated[0]->first_name.' '.$user_updated[0]->last_name;
+        }
 		return response()->json([
             'success' => true,
             'data' => $budgets
@@ -92,6 +100,8 @@ class BudgetsController extends Controller
      */
     public function update(UpdateBudgetsRequest $request, Budgets $budget)
     {
+        $user = Auth::user();
+        $request['updated_user_id'] = $user->id;
         $budget->update($request->all());
 
         return response()->json([

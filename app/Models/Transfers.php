@@ -27,8 +27,10 @@ class Transfers extends Model
 		'transfer_fee',
 		'transfer_amount',
 		'next_carry_over',
-		'created',
-		'modified',
+		'created_at',
+        'created_user_id',
+		'updated_at',
+        'updated_user_id',
 		'deleted',
 	];
 

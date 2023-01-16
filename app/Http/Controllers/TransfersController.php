@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use App\Models\Transfers;
 use App\Http\Requests\StoreTransfersRequest;
 use App\Http\Requests\UpdateTransfersRequest;

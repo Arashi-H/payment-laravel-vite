@@ -20,8 +20,10 @@ class Constructions extends Model
 		'name',
 		'sort',
 		'house',
-		'created',
-		'modified',
+		'created_at',
+        'created_user_id',
+		'updated_at',
+        'updated_user_id',
 		'deleted',
 	];
 }

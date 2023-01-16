@@ -22,8 +22,10 @@ class Article extends Model
 		'street_name',
 		'ended',
 		'contract_amount',
-		'created',
-		'modified',
+		'created_at',
+        'created_user_id',
+		'updated_at',
+        'updated_user_id',
 		'deleted',
 	];
 

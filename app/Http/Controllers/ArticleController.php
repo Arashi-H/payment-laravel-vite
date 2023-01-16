@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -37,10 +39,14 @@ class ArticleController extends Controller
         foreach ($articles as $article) {
             $budgets = Budgets::select('*')->where('article_id', $article->id)->get();
             foreach ($budgets as $budget) {
-                $construction = Constructions::select('name')->where('id', $budget->construction_id)->get();
+                $construction = Constructions::select('*')->where('id', $budget->construction_id)->get();
                 $budget['construction_name'] = $construction[0]->name;
             }
             $article['budget'] = $budgets;
+            $user_created = User::select('*')->where('id', $article->created_user_id)->get();
+            $user_updated = User::select('*')->where('id', $article->updated_user_id)->get();
+            $article['created_user_name'] = $user_created[0]->first_name.' '.$user_created[0]->last_name;
+            $article['updated_user_name'] = $user_updated[0]->first_name.' '.$user_updated[0]->last_name;
         }
 
 
@@ -81,6 +87,11 @@ class ArticleController extends Controller
             ]);
 		}
 		// role permission related code should be written here!
+
+        $user = Auth::user();
+        $data['created_user_id'] = $user->id;
+        $data['updated_user_id'] = $user->id;
+
         $data['name'] = $request['name'];
         $data['contract_amount'] = $request['contract_amount'];
         $data['ended'] = $request['ended'];
@@ -106,12 +117,16 @@ class ArticleController extends Controller
             }
 
             $elem['article_id'] = $article['id'];
+            $elem['created_user_id'] = $user->id;
+            $elem['updated_user_id'] = $user->id;
             $budget = Budgets::create($elem);
             array_push($budgets, $budget);
         }
 
         return response()->json([
             'success' => true,
+            'article' => $article,
+            'budgets' => $budgets,
             'message' => 'Article and Budget successfully added.'
         ]);
 	}
@@ -146,6 +161,8 @@ class ArticleController extends Controller
 	 */
 	public function update(UpdateArticleRequest $request, Article $article)
 	{
+        $user = Auth::user();
+        $request['updated_user_id'] = $user->id;
         $article->update($request->all());
 
         return response()->json([
