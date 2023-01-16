@@ -37,6 +37,6 @@ Route::get('/company', function () {
     return view('welcome');
 });
 
-Route::get('/construction', function () {
+Route::get('/construction/{number}', function () {
     return view('welcome');
 });

@@ -19,6 +19,7 @@ import { FaYenSign } from "react-icons/fa"
 import { IoMdRemoveCircle, IoMdAddCircle } from "react-icons/io"
 
 import CreatePayment from '../../components/CreatePayment'
+import UpdateHistory from "../../components/UpdateHistory";
 
 import './Article.scss';
 
@@ -29,256 +30,6 @@ import {
 } from '../../actions/common'
 import { logout } from "../../actions/auth";
 import agent from '../../api/'
-
-let t_budgets = [{
-      id: 1,
-      construction: 'asgserhserhserse',
-      cost: 120000,
-      contract_amount: 300000,
-      change_amount: 0
-    }, {
-      id: 2,
-      construction: 'ftyjftyj',
-      cost: 68000,
-      contract_amount: 500,
-      change_amount: 0
-    }, {
-      id: 3,
-      construction: 'ftyjftyjdrt',
-      cost: 500,
-      contract_amount: 520000,
-      change_amount: 0
-    }, {
-      id: 4,
-      construction: 'djftyjf',
-      cost: 980000,
-      contract_amount: 52000,
-      change_amount: 0
-    }, {
-      id: 5,
-      construction: 'drtjdrthdrthd',
-      cost: 5000,
-      contract_amount: 6300,
-      change_amount: 0
-    }, {
-      id: 6,
-      construction: 'drthjdrthdth',
-      cost: 0,
-      contract_amount: 5000,
-      change_amount: 0
-    }, {
-      id: 7,
-      construction: 'drtjdrth',
-      cost: 5300,
-      contract_amount: 52000,
-      change_amount: 0
-    }, {
-      id: 8,
-      construction: 'drtd',
-      cost: 12500000,
-      contract_amount: 9000,
-      change_amount: 0
-    }, {
-      id: 9,
-      construction: 'ftyjf',
-      cost: 570000,
-      contract_amount: 80000,
-      change_amount: 0
-    }, {
-      id: 10,
-      construction: 'rthdrt',
-      cost: 82000,
-      contract_amount: 8000,
-      change_amount: 0
-    }, {
-      id: 11,
-      construction: 'dytjfty',
-      cost: 1000000,
-      contract_amount: 53000,
-      change_amount: 0
-    }, {
-      id: 12,
-      construction: 'drthdrth',
-      cost: 52100,
-      contract_amount: 300000,
-      change_amount: 0
-    }, {
-      id: 13,
-      construction: 'ftyjftyj',
-      cost: 2000,
-      contract_amount: 300000,
-      change_amount: 0
-    }]
-
-let t_articles = [
-  {
-    id: 1,
-    name: 'awegsaewrg',
-    is_house: 0,
-    ended: 0,
-    contract_amount: 150000,
-    budget: [
-      {
-        id: 1,
-        construction: 'trhse',
-        cost: 120000,
-        contract_amount: 300000,
-        change_amount: 0
-      }, {
-        id: 2,
-        construction: 'ftyjftyj',
-        cost: 68000,
-        contract_amount: 500,
-        change_amount: 0
-      }, {
-        id: 3,
-        construction: 'ftyjftyjdrt',
-        cost: 500,
-        contract_amount: 520000,
-        change_amount: 0
-      }
-    ]
-  }, {
-    id: 2,
-    name: 'drthsth',
-    is_house: 1,
-    ended: 0,
-    contract_amount: 750000,
-    budget: [
-      {
-        id: 4,
-        construction: 'djftyjf',
-        cost: 980000,
-        contract_amount: 52000,
-        change_amount: 0
-      }, {
-        id: 5,
-        construction: 'drtjdrthdrthd',
-        cost: 5000,
-        contract_amount: 6300,
-        change_amount: 0
-      }
-    ]
-  }, {
-    id: 3,
-    name: 'sertyt',
-    is_house: 0,
-    ended: 0,
-    contract_amount: 25000,
-    budget: [
-      {
-        id: 6,
-        construction: 'drthjdrthdth',
-        cost: 0,
-        contract_amount: 5000,
-        change_amount: 0
-      }, {
-        id: 7,
-        construction: 'drtjdrth',
-        cost: 5300,
-        contract_amount: 52000,
-        change_amount: 0
-      }, {
-        id: 8,
-        construction: 'drtd',
-        cost: 12500000,
-        contract_amount: 9000,
-        change_amount: 0
-      }, {
-        id: 9,
-        construction: 'ftyjf',
-        cost: 570000,
-        contract_amount: 80000,
-        change_amount: 0
-      }, {
-        id: 10,
-        construction: 'rthdrt',
-        cost: 82000,
-        contract_amount: 8000,
-        change_amount: 0
-      }, {
-        id: 11,
-        construction: 'dytjfty',
-        cost: 1000000,
-        contract_amount: 53000,
-        change_amount: 0
-      }, {
-        id: 12,
-        construction: 'drthdrth',
-        cost: 52100,
-        contract_amount: 300000,
-        change_amount: 0
-      }
-    ]
-  }, {
-    id: 4,
-    name: 'erhs',
-    is_house: 0,
-    ended: 0,
-    contract_amount: 3200,
-    budget: [
-      {
-        id: 12,
-        construction: 'drthdrth',
-        cost: 52100,
-        contract_amount: 300000,
-        change_amount: 0
-      }, {
-        id: 13,
-        construction: 'ftyjftyj',
-        cost: 2000,
-        contract_amount: 300000,
-        change_amount: 0
-      }
-    ]
-  }
-]
-
-let t_constructions = [
-  {
-    id: 1,
-    name: 'sthdrt'
-  }, {
-    id: 2,
-    name: 'fghnfh'
-  }, {
-    id: 3,
-    name: 'drtntn'
-  }, {
-    id: 4,
-    name: 'fthny'
-  }, {
-    id: 5,
-    name: 'rtynfhn'
-  }, {
-    id: 6,
-    name: 'drgbdr'
-  }, {
-    id: 7,
-    name: 'juyyu'
-  }, {
-    id: 8,
-    name: 'serw'
-  }, {
-    id: 9,
-    name: 'e56het'
-  }, {
-    id: 10,
-    name: 'rtbtrb'
-  }, {
-    id: 11,
-    name: 'thynty'
-  }, {
-    id: 12,
-    name: 'tyuj'
-  }, {
-    id: 13,
-    name: 'e5h'
-  }, {
-    id: 14,
-    name: 'uju'
-  }
-]
 
 const Article = () => {
   const navigate = useNavigate()
@@ -293,7 +44,6 @@ const Article = () => {
   const [editArticle, setEditArticle] = useState({})
   const [addArticle, setAddArticle] = useState({name: '', contract_amount: 0, is_house: 1, ended: 0, budget: []})
   const [budgets, setBudgets] = useState([])
-  
 
   const articleColumns = [
     {
@@ -339,14 +89,20 @@ const Article = () => {
 			'is_house: number',
       'ended: number',
 			'contract_amount: number',
-      'budget: array'
+      'budget: array',
+      'created_user_id: number',
+      'created_user_name: string',
+      'created_at: string',
+      'updated_user_id: number',
+      'updated_user_name: string',
+      'updated_at: string',
 		]
 	});
 
   const budgetColumns = [
     {
       label: 'Construction',
-      dataField: 'construction',
+      dataField: 'construction_name',
       dataType: 'string',
       allowEdit: false
     }, {
@@ -386,7 +142,7 @@ const Article = () => {
 		dataSource: budgets,
 		dataFields: [
       'id: number',
-			'construction: string',
+			'construction_name: string',
 			'cost: number',
 			'contract_amount: number',
       'change_amount: number'
@@ -399,18 +155,17 @@ const Article = () => {
       try {
         const resArticle = await agent.common.getArticle()
         const resAutoConstruction = await agent.common.getAutoConstruction()
-        console.log('resArticle data=', resArticle)
-        console.log('resAutoConstruction data=', resAutoConstruction)
+        console.log('resArticle data=', resArticle.data.data)
         if (resArticle.data.success) {
-          setArticles([...resArticle])
+          setArticles([...resArticle.data.data])
         }
 
         if(resAutoConstruction.data.success) {
-          setConstructions([...setConstructions([...t_constructions])])
+          setConstructions([...resAutoConstruction.data.data])
         }
         dispatch(endAction())
       } catch (error) {
-        if (error.response.status >= 400 && error.response.status <= 415) {
+        if (error.response.status >= 400 && error.response.status <= 500) {
           dispatch(endAction())
           dispatch(showToast('error', error.response.data.message))
           if (error.response.data.message == 'Unauthorized') {
@@ -422,7 +177,6 @@ const Article = () => {
       }
     }
     getArticleData()
-    
   }, [])
 
   const budgetAddTableInit = () => {
@@ -473,13 +227,13 @@ const Article = () => {
       <DropDownList className="budget_add_input" selectedIndexes={[0]} filterable>
         {
           constructions.map((construction, idx) => {
-            console.log('construction', construction)
             return <ListItem value={"" + construction.id} key={idx}>{construction.name}</ListItem>
           })
         }
       </DropDownList>,
       document.querySelector(`#construction_add_input`)
     )
+    
     ReactDOM.render(
       <NumberInput />,
       document.querySelector(`#cost_add_input`)
@@ -546,7 +300,6 @@ const Article = () => {
       <DropDownList className="budget_add_input" selectedIndexes={[0]} filterable>
         {
           constructions.map((construction, idx) => {
-            console.log('construction', construction)
             return <ListItem value={"" + construction.id} key={idx}>{construction.name}</ListItem>
           })
         }
@@ -571,16 +324,39 @@ const Article = () => {
     )
   }
 
+  const handleArticleTableClick = (event) => {
+    const edit_btn = event.target.closest('.table_article_edit_btn')
+    const input_btn = event.target.closest('.table_article_payment_btn')
+
+    if(edit_btn) {
+      goArticleEdit(edit_btn.getAttribute('data-id'))
+    } else if(input_btn) {
+      goArticlePayment(input_btn.getAttribute('data-id'))
+    }
+	}
+
+  const handleBudgetTableClick = (event) => {
+
+  }
+
+  const clickSaveBtn = async() => {
+    dispatch(startAction())
+		const res = await agent.common.editArticle(editArticle.id, editArticle.name, editArticle.contract_amount, editArticle.is_house, editArticle.ended)
+		if (res.data.success) dispatch(showToast('success', res.data.message))
+		else dispatch(showToast('error', res.data.message))
+		dispatch(endAction())
+    console.log('click save btn=', editArticle)
+  }
+
+  const clickAddSubmitBtn = () => {
+    console.log('click add submit btn=', addArticle)
+  }
+
   const clickSearchBtn = () => {
     console.log()
   }
 
-  const clickCancelBtn = () => {
-    setPage('list')
-  }
-
   const goArticleEdit = (article_id) => {
-    console.log('clcik article edit btn=', article_id)
     const result = articles.find(article => {
       return article.id == article_id;
     });
@@ -601,27 +377,8 @@ const Article = () => {
     setPage('payment')
   }
 
-  const handleArticleTableClick = (event) => {
-    const edit_btn = event.target.closest('.table_article_edit_btn')
-    const input_btn = event.target.closest('.table_article_payment_btn')
-
-    if(edit_btn) {
-      goArticleEdit(edit_btn.getAttribute('data-id'))
-    } else if(input_btn) {
-      goArticlePayment(input_btn.getAttribute('data-id'))
-    }
-	}
-
-  const handleBudgetTableClick = (event) => {
-
-  }
-
-  const clickSaveBtn = () => {
-    console.log('click save btn=', editArticle)
-  }
-
-  const clickAddSubmitBtn = () => {
-    console.log('click add submit btn=', addArticle)
+  const clickCancelBtn = () => {
+    setPage('list')
   }
 
 
@@ -759,6 +516,14 @@ const Article = () => {
                       <div className="card-body">
                         <div className="row">
                           <div className="col-md-12">
+                            <UpdateHistory 
+                              id={editArticle.id} 
+                              created_user_name={editArticle.created_user_name} 
+                              created_at={editArticle.created_at} 
+                              updated_user_name={editArticle.updated_user_name} 
+                              updated_at={editArticle.updated_at} 
+                            />
+                            <hr />
                             <div className="form-group">
                               <div className="row">
                                 <div className="col-md-3 inline_label">
@@ -836,7 +601,7 @@ const Article = () => {
                               dataSource={budgetData} 
                               // keyboardNavigation
                               paging
-                              filtering
+                              // filtering
                               // tooltip={tooltip}
                               freezeHeader
                               freezeFooter
@@ -941,12 +706,12 @@ const Article = () => {
                               dataSource={budgetData} 
                               // keyboardNavigation
                               paging
-                              filtering
+                              // filtering
                               // tooltip={tooltip}
                               freezeHeader
                               freezeFooter
                               columns={budgetColumns} 
-                              columnMenu
+                              // columnMenu
                               editing
                               editMode="row"
                               sortMode='many'

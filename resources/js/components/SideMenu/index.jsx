@@ -163,8 +163,6 @@ const StyledMenuItem = styled(MenuItem)`
   }
 `;
 
-
-
 const SideMenu = () => {
 
   const sidebarRef = useRef(null);
@@ -241,8 +239,8 @@ const SideMenu = () => {
           <StyledMenuItem icon={<FaHome/>} routerLink={<Link to="/article" />}>Object Management</StyledMenuItem>
           <StyledMenuItem icon={<FaRegBuilding />} routerLink={<Link to="/company" />}>Industry Management</StyledMenuItem>
           <StyledSubMenu icon={<FaGavel />} label="Construction Management">
-            <StyledMenuItem routerLink={<Link to="/construction" />} >Housing construction list</StyledMenuItem>
-            <StyledMenuItem >Building construction list</StyledMenuItem>
+            <StyledMenuItem routerLink={<Link to="/construction/1" />} >Housing construction list</StyledMenuItem>
+            <StyledMenuItem routerLink={<Link to="/construction/0" />} >Building construction list</StyledMenuItem>
           </StyledSubMenu>
           <StyledSubMenu icon={<FaYenSign />} label="Input Management">
             <StyledMenuItem >Input confirmation</StyledMenuItem>

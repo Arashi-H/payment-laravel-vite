@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from 'react-dom'
 import { renderToString } from "react-dom/server";
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, useParams, Link } from 'react-router-dom'
 
 import { Table } from 'smart-webcomponents-react/table';
 import { CheckBox } from 'smart-webcomponents-react/checkbox';
@@ -20,7 +20,27 @@ import { IoMdRemoveCircle, IoMdAddCircle } from "react-icons/io"
 
 import './Construction.scss';
 
-const Construction = (props) => {
+import {
+  startAction,
+  endAction,
+  showToast
+} from '../../actions/common'
+import { logout } from "../../actions/auth";
+import agent from '../../api/'
+
+const Construction = () => {
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  let { house } = useParams();
+
+  const [constructions, setConstructions] = useState([])
+  const [addConstruction, setAddConstruction] = useState({
+    name: '',
+    house: house
+  })
+  const [editConstruction, setEditConstruction] = useState({})
 
   const constructionTable = useRef()
 
@@ -48,38 +68,7 @@ const Construction = (props) => {
   ];
   
   const constructionData = new Smart.DataAdapter({
-		dataSource: [{
-      id: 1,
-      name: 'awegsaewrg',
-      sort: 1,
-      house: 1,
-    }, {
-      id: 2,
-      name: 'drthd',
-      sort: 2,
-      house: 1,
-    }, {
-      id: 3,
-      name: 'dth',
-      sort: 3,
-      house: 1,
-    }, {
-      id: 4,
-      name: 'myu',
-      sort: 4,
-      house: 1,
-    }, {
-      id: 5,
-      name: 'drt',
-      sort: 5,
-      house: 1,
-    }, {
-      id: 6,
-      name: 'u',
-      sort: 6,
-      house: 1,
-
-    }],
+		dataSource: constructions,
 		dataFields: [
 			'id: number',
 			'name: string',
@@ -87,6 +76,31 @@ const Construction = (props) => {
       'house: number'
 		]
 	});
+
+  useEffect(() => {
+    async function getConstructionData() {
+      dispatch(startAction())
+      try {
+        const resConstruction = await agent.common.getConstruction(house)
+        console.log('resConstruction data=', resConstruction.data)
+        // if (resConstruction.data.success) {
+          setConstructions([...resConstruction.data])
+        // }
+        dispatch(endAction())
+      } catch (error) {
+        if (error.response.status >= 400 && error.response.status <= 500) {
+          dispatch(endAction())
+          dispatch(showToast('error', error.response.data.message))
+          if (error.response.data.message == 'Unauthorized') {
+            localStorage.removeItem('token')
+            dispatch(logout())
+            navigate('/')
+          }
+        }
+      }
+    }
+    getConstructionData()
+  }, [])
 
   const ConstructionTableInit = () => {
     const headerTemplate = document.createElement('template');
@@ -105,13 +119,25 @@ const Construction = (props) => {
 		constructionTable.current.headerRow = headerTemplate.id;
 
     ReactDOM.render(
-      <Input className="table_name_add_input"/>,
+      <Input className="table_name_add_input" onChange={(e) => setAddConstruction({...addConstruction, name: e.target.value})}/>,
       document.querySelector(`#name_add_input`)
     )
     ReactDOM.render(
       <a className="table_construction_add_btn" ><IoMdAddCircle /></a>,
       document.querySelector(`#construction_add_btn`)
     )
+  }
+
+  const handleConstructionTableClick = (event) => {
+    const delete_btn = event.target.closest('.table_construction_delete_btn')
+
+    if(delete_btn) {
+      constructionDeleteSubmit(delete_btn.getAttribute('data-id'))
+    }
+	}
+
+  const constructionDeleteSubmit = (id) => {
+    console.log('delete construction with id=', id)
   }
 
   return (

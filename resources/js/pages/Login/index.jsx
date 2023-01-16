@@ -37,11 +37,10 @@ const Login = () => {
         dispatch(endAction())
         if (res.data.success) {
           localStorage.setItem('token', res.data.token)
-          dispatch(showToast('success', 'Success login.'))
+          dispatch(showToast('success', res.data.message))
           res.data.user.role = res.data.role
           res.data.user.token = res.data.token
           dispatch(login(res.data.user))
-          console.log("res.data.user=", res.data.user)
           navigate("/article")
         }
       } catch (error) {
