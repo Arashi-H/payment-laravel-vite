@@ -68,6 +68,16 @@ class CompaniesController extends Controller
 
         $company = Companies::create($data);
 
+        $table = TableMap::select('*')->where('name', 'company')->get();
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $company->id;
+        $log['action_time'] = $company->created_at;
+        $log['action_type'] = 1;
+
+        $system_log = SystemLog::create($log);
+
         return response()->json([
             'success' => true,
             'data' => $company,
@@ -108,6 +118,19 @@ class CompaniesController extends Controller
     {
         $user = Auth::user();
         $request['updated_user_id'] = $user->id;
+
+        $company['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
+
+        $table = TableMap::select('*')->where('name', 'company')->get();
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $company->id;
+        $log['action_time'] = $company->updated_at;
+        $log['action_type'] = 2;
+
+        $system_log = SystemLog::create($log);
+
         $company->update($request->all());
 
         return response()->json([
@@ -124,7 +147,21 @@ class CompaniesController extends Controller
      */
     public function destroy(Companies $company)
     {
-        $company->delete();
+        $user = Auth::user();
+        $request['updated_user_id'] = $user->id;
+
+        $table = TableMap::select('*')->where('name', 'company')->get();
+        $company['deleted'] = Carbon::now()->format('Y-m-d H:i:s');
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $company->id;
+        $log['action_time'] = $company->deleted;
+        $log['action_type'] = 3;
+
+		$company->update(['deleted' => $company['deleted']]);
+
+        $system_log = SystemLog::create($log);
 
         return response()->json([
             'success' => true

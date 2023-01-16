@@ -68,6 +68,16 @@ class ConstructionsController extends Controller
 
         $construction = Constructions::create($data);
 
+        $table = TableMap::select('*')->where('name', 'construction')->get();
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $construction->id;
+        $log['action_time'] = $construction->created_at;
+        $log['action_type'] = 1;
+
+        $system_log = SystemLog::create($log);
+
         return response()->json([
             'success' => true,
             'data' => $construction
@@ -107,6 +117,19 @@ class ConstructionsController extends Controller
     {
         $user = Auth::user();
         $request['updated_user_id'] = $user->id;
+
+        $construction['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
+
+        $table = TableMap::select('*')->where('name', 'construction')->get();
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $construction->id;
+        $log['action_time'] = $construction->updated_at;
+        $log['action_type'] = 2;
+
+        $system_log = SystemLog::create($log);
+
         $construction->update($request->all());
 
         return response()->json([
@@ -123,7 +146,21 @@ class ConstructionsController extends Controller
      */
     public function destroy(Constructions $construction)
     {
-        $construction->delete();
+        $user = Auth::user();
+        $request['updated_user_id'] = $user->id;
+
+        $table = TableMap::select('*')->where('name', 'construction')->get();
+        $construction['deleted'] = Carbon::now()->format('Y-m-d H:i:s');
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $construction->id;
+        $log['action_time'] = $construction->deleted;
+        $log['action_type'] = 3;
+
+		$construction->update(['deleted' => $construction['deleted']]);
+
+        $system_log = SystemLog::create($log);
 
         return response()->json([
             'success' => true

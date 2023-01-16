@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Article;
+use App\Models\SystemLog;
+use App\Models\TableMap;
 use App\Models\Budgets;
 use App\Models\Constructions;
 use App\Http\Requests\StoreArticleRequest;
@@ -123,6 +125,16 @@ class ArticleController extends Controller
             array_push($budgets, $budget);
         }
 
+        $table = TableMap::select('*')->where('name', 'article')->get();
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $article->id;
+        $log['action_time'] = $article->created_at;
+        $log['action_type'] = 1;
+
+        $system_log = SystemLog::create($log);
+
         return response()->json([
             'success' => true,
             'article' => $article,
@@ -163,6 +175,18 @@ class ArticleController extends Controller
 	{
         $user = Auth::user();
         $request['updated_user_id'] = $user->id;
+        $article['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
+
+        $table = TableMap::select('*')->where('name', 'article')->get();
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $article->id;
+        $log['action_time'] = $article->updated_at;
+        $log['action_type'] = 2;
+
+        $system_log = SystemLog::create($log);
+
         $article->update($request->all());
 
         return response()->json([
@@ -179,7 +203,21 @@ class ArticleController extends Controller
 	 */
 	public function destroy(Article $article)
 	{
-		$article->delete();
+        $user = Auth::user();
+        $request['updated_user_id'] = $user->id;
+
+        $table = TableMap::select('*')->where('name', 'article')->get();
+        $article['deleted'] = Carbon::now()->format('Y-m-d H:i:s');
+
+        $log['user_id'] = $user->id;
+        $log['table_id'] = $table[0]->id;
+        $log['record_id'] = $article->id;
+        $log['action_time'] = $article->deleted;
+        $log['action_type'] = 3;
+
+		$article->update(['deleted' => $article['deleted']]);
+
+        $system_log = SystemLog::create($log);
 
         return response()->json([
             'success' => true

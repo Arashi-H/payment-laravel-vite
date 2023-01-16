@@ -13,10 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('construction_menus', function (Blueprint $table) {
+        Schema::create('table_maps', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->integer('sub_category_id');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('construction_menus');
+        Schema::dropIfExists('table_maps');
     }
 };
