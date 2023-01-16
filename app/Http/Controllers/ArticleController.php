@@ -41,6 +41,7 @@ class ArticleController extends Controller
                 // var_dump(($construction[0])->name); exit();
                 $budget['construction_name'] = $construction[0]->name;
             }
+            var_dump($budgets); exit();
             $article['budget'] = $budgets;
         }
 

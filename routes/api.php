@@ -10,7 +10,7 @@ use App\Http\Controllers\SetingsController;
 use App\Http\Controllers\TransfersController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
-// use App\Http\Controllers\MenuController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -47,21 +47,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('constructions/autocomplete', [ConstructionsController::class, 'get_for_autocomplete']);
     Route::apiResource('constructions', ConstructionsController::class);
 
-    Route::apiResource('companies', PaymentsController::class);
+    Route::apiResource('payments', PaymentsController::class);
 
-    Route::apiResource('companies', RoleController::class);
+    Route::apiResource('roles', RoleController::class);
 
-    Route::apiResource('companies', SetingsController::class);
+    Route::apiResource('settings', SetingsController::class);
 
-    Route::apiResource('companies', TransfersController::class);
+    Route::apiResource('transfer', TransfersController::class);
 
-    Route::apiResource('companies', UserController::class);
+    Route::apiResource('users', UserController::class);
 
-    Route::apiResource('companies', UserRoleController::class);
+    Route::apiResource('user-role', UserRoleController::class);
 
-    Route::get('/users', [UserController::class, 'index']);
-    Route::get('/home', [ArticleController::class, 'index']);
-    // Route::get('/menu', [MenuController::class, 'index']);
+    Route::apiResource('menu', MenuController::class);
 });
 
 
