@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\TableMap;
 use App\Models\Budgets;
+use Carbon\Carbon;
+use App\Models\SystemLog;
 use App\Http\Requests\StoreBudgetsRequest;
 use App\Http\Requests\UpdateBudgetsRequest;
 
@@ -61,6 +63,7 @@ class BudgetsController extends Controller
      */
     public function store(StoreBudgetsRequest $request)
     {
+        // $validated = $request->validated();
         $data = $request->all();
         $user = Auth::user();
         $budget = Budgets::create($data);
@@ -77,7 +80,8 @@ class BudgetsController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $budget
+            'data' => $budget,
+            'message' => 'Budget stored successfully.'
         ]);
     }
 

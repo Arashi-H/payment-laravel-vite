@@ -24,7 +24,26 @@ class UpdateBudgetsRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'article_id' => [
+                'numeric',
+                'required',
+            ],
+            'construction_id' => [
+                'numeric',
+                'required',
+            ],
+            'contract_amount' => [
+                'numeric',
+                'required',
+            ],
+            'cost' => [
+                'numeric',
+                'required',
+            ],
+            'change_amount' => [
+                'required',
+                'numeric',
+            ],
         ];
     }
 }

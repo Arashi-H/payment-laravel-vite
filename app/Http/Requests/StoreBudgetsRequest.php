@@ -24,7 +24,35 @@ class StoreBudgetsRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'article_id' => [
+                'numeric',
+                'required',
+            ],
+            'construction_id' => [
+                'numeric',
+                'required',
+            ],
+            'contract_amount' => [
+                'numeric',
+                'required',
+            ],
+            'cost' => [
+                'numeric',
+                'required',
+            ],
+            'change_amount' => [
+                'required',
+                'numeric',
+            ],
         ];
     }
+
+    // public function withValidator($validator)
+    // {
+    //     $validator->after(function ($validator) {
+    //         if ($validator->somethingElseIsInvalid()) {
+    //             $validator->errors()->add('field', 'Something is wrong with this field!');
+    //         }
+    //     });
+    // }
 }
