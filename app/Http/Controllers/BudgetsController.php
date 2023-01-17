@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\TableMap;
 use App\Models\Budgets;
 use App\Http\Requests\StoreBudgetsRequest;
 use App\Http\Requests\UpdateBudgetsRequest;
@@ -63,12 +64,12 @@ class BudgetsController extends Controller
         $data = $request->all();
         $budget = Budgets::create($data);
 
-        $table = TableMap::select('*')->where('name', 'article')->get();
+        $table = TableMap::select('*')->where('name', 'budget')->get();
 
         $log['user_id'] = $user->id;
         $log['table_id'] = $table[0]->id;
-        $log['record_id'] = $article->id;
-        $log['action_time'] = $article->created_at;
+        $log['record_id'] = $budget->id;
+        $log['action_time'] = $budget->created_at;
         $log['action_type'] = 1;
 
         $system_log = SystemLog::create($log);

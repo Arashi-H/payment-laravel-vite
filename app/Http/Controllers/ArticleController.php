@@ -109,7 +109,7 @@ class ArticleController extends Controller
         $data['ended'] = $request['ended'];
         $data['is_house'] = $request['is_house'];
         $article = Article::create($data);
-
+        // echo('here suc'); exit();
         $data_budgets = $request['budgets'];
 
         $budgets = array();
@@ -132,6 +132,17 @@ class ArticleController extends Controller
             $elem['created_user_id'] = $user->id;
             $elem['updated_user_id'] = $user->id;
             $budget = Budgets::create($elem);
+
+            $table = TableMap::select('*')->where('name', 'budget')->get();
+
+            $log['user_id'] = $user->id;
+            $log['table_id'] = $table[0]->id;
+            $log['record_id'] = $budget->id;
+            $log['action_time'] = $budget->created_at;
+            $log['action_type'] = 1;
+
+            $system_log = SystemLog::create($log);
+
             array_push($budgets, $budget);
         }
 
