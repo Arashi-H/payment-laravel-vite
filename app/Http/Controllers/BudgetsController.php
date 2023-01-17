@@ -62,6 +62,7 @@ class BudgetsController extends Controller
     public function store(StoreBudgetsRequest $request)
     {
         $data = $request->all();
+        $user = Auth::user();
         $budget = Budgets::create($data);
 
         $table = TableMap::select('*')->where('name', 'budget')->get();
