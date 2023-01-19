@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Budgets;
+use App\Models\Constructions;
 use App\Models\Article;
 use App\Models\TableMap;
 use Carbon\Carbon;
@@ -136,6 +137,19 @@ class BudgetsController extends Controller
         $budget->update($request->all());
 
         $budgets = Budgets::select('*')->where('article_id', $budget->article_id)->get();
+
+        foreach ($budgets as $budget) {
+            $construction = Constructions::select('*')->where('id', $budget->construction_id)->first();
+            if (!empty($construction)) {
+                $budget['construction_name'] = $construction->name;
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'error' => $budget->construction_id,
+                    'message' => 'No such construction id'
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => true,
