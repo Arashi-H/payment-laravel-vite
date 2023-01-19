@@ -15,13 +15,15 @@ const commonApi = {
                 Authorization: "Bearer " + localStorage.getItem("token"),
             },
         }),
-    addArticle: (userId, forumId, status) =>
+    addArticle: (name, contract_amount, is_house, ended, budgets) =>
         axios.post(
-            `${API_URL}/updateEnjoy`,
+            `${API_URL}/articles`,
             {
-                userId,
-                forumId,
-                status,
+                name,
+                contract_amount,
+                is_house,
+                ended,
+                budgets,
             },
             {
                 headers: {
@@ -29,9 +31,9 @@ const commonApi = {
                 },
             }
         ),
-    editArticle: (article_id, name, is_house, ended, contract_amount) =>
+    editArticle: (article_id, name, contract_amount, is_house, ended) =>
         axios.put(
-            `${API_URL}/getAchievement/${article_id}`,
+            `${API_URL}/articles/${article_id}`,
             {
                 name,
                 is_house,
@@ -46,6 +48,35 @@ const commonApi = {
         ),
     getAutoConstruction: () =>
         axios.get(`${API_URL}/constructions/autocomplete`, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+        }),
+
+    addBudget: (
+        article_id,
+        construction_id,
+        cost,
+        contract_amount,
+        change_amount
+    ) =>
+        axios.post(
+            `${API_URL}/budgets`,
+            {
+                article_id,
+                construction_id,
+                cost,
+                contract_amount,
+                change_amount,
+            },
+            {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token"),
+                },
+            }
+        ),
+    deleteBudget: (budget_id) =>
+        axios.delete(`${API_URL}/budgets/${budget_id}`, {
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("token"),
             },

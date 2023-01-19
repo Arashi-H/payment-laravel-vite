@@ -1,20 +1,65 @@
-import React, { memo } from 'react';
-import { pure } from 'recompose';
-import { DropDownList, ListItem } from 'smart-webcomponents-react/dropdownlist';
+import React, { memo, useEffect, useRef, useState } from 'react';
+import { FaOctopusDeploy } from 'react-icons/fa';
+import Select from 'react-select';
+import styled from 'styled-components';
 
 import './AutoConstruction.scss'
 
+import { useMousePos, useWindowDimensions } from '../../utils/Helper';
+
+const StyledSelect = styled(Select)`
+  & > div[id^=react-select] {
+    z-index: 101;
+  }
+`
+
+const BottomStyledSelect = styled(Select)`
+  & > div[id^=react-select] {
+    z-index: 101;
+    top: -316px;
+  }
+`
+
 const AutoConstruction = (props) => {
+
+  const selectRef = useRef()
+  const { posY } = useMousePos();
+  const { height } = useWindowDimensions();
+
+  const [position, setPosition] = useState('top')
+
+  const focused = () => {
+    if(height / 2 < posY) setPosition('bottom')
+    else setPosition('top')
+  }
+
   return (
-    <DropDownList className="budget_add_input" selectedIndexes={[0]} filterable>
+    <>
       {
-        props.constructions.map((construction, idx) => {
-          if(idx < 100) {
-            return <ListItem value={"" + construction.id} key={idx}>{construction.name}</ListItem>
-          }
-        })
+        position == 'top' && 
+          <div ref={selectRef} id={props.id}>
+            <StyledSelect 
+              options={props.constructions} 
+              value={props.value}
+              styles={{ menu: (base) => ({ ...base, marginBottom: 76 }) }}
+              onChange={(val) => props.onChange(val)}
+              // onFocus={() => focused()}
+            />
+          </div>
       }
-    </DropDownList>
+      {
+        position == 'bottom' &&
+          <div id={props.id}>
+            <BottomStyledSelect 
+              options={props.constructions} 
+              value={props.value} 
+              styles={{ menu: (base) => ({ ...base, marginBottom: 0 }) }}
+              onChange={(val) => props.onChange(val)}
+              // menuIsOpen={false}
+            />
+          </div>
+      }
+    </>
   )
 }
 
