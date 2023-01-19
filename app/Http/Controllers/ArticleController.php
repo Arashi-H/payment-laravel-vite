@@ -25,6 +25,7 @@ class ArticleController extends Controller
 	public function index(Request $request)
 	{
 		$articles = Article::all();
+        $articles = $articles->where('deleted', null)->values();
         if(isset($request->id)) {
             $articles = $articles->where('id', $request->id)->values();
         }

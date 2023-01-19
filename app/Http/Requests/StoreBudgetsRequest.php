@@ -47,12 +47,12 @@ class StoreBudgetsRequest extends FormRequest
         ];
     }
 
-    // public function withValidator($validator)
-    // {
-    //     $validator->after(function ($validator) {
-    //         if ($validator->somethingElseIsInvalid()) {
-    //             $validator->errors()->add('field', 'Something is wrong with this field!');
-    //         }
-    //     });
-    // }
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if ($validator->errors()) {
+                $validator->errors()->add('field', 'Something is wrong with this field!');
+            }
+        });
+    }
 }

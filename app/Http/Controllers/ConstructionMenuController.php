@@ -21,6 +21,7 @@ class ConstructionMenuController extends Controller
     public function index()
     {
         $constructionMenus = ConstructionMenu::all();
+        $constructionMenus = $constructionMenus->where('deleted', null)->values();
         // if(isset($request->id)) {
         //     $budgets = $budgets->where('id', $request->id);
         // }

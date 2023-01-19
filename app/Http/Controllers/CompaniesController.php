@@ -21,6 +21,7 @@ class CompaniesController extends Controller
     public function index()
     {
         $companies = Companies::all();
+        $companies = $companies->where('deleted', null)->values();
         // if(isset($request->id)) {
         //     $budgets = $budgets->where('id', $request->id);
         // }

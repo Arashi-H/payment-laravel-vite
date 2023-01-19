@@ -18,6 +18,7 @@ class TransfersController extends Controller
     public function index()
     {
         $transfers = Transfers::all();
+        $transfers = $transfers->where('deleted', null)->values();
         // if(isset($request->id)) {
         //     $budgets = $budgets->where('id', $request->id);
         // }

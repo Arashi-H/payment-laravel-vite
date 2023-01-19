@@ -18,6 +18,7 @@ class SetingsController extends Controller
     public function index()
     {
         $setings = Setings::all();
+        $setings = $setings->where('deleted', null)->values();
         // if(isset($request->id)) {
         //     $budgets = $budgets->where('id', $request->id);
         // }
