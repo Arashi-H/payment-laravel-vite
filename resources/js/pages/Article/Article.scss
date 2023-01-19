@@ -58,10 +58,51 @@
   }
 }
 
-.table_budget_add_btn {
+.budget_add_submit_btn {
   color: #007bff;
   font-size: 26px;
+  position: absolute;
+  top: 66px;
+  z-index: 101;
+  padding-left: 12px;
   &:hover {
     color: #0069d9;
   }
 }
+
+.table_add_input {
+  padding: 8px 15px;
+  position: absolute;
+  z-index: 101;
+  top: 66px;
+  margin: 0 12px;
+
+  &:focus {
+    border-width: 2px;
+    border-color: #007bff;
+    box-shadow: none;
+  }
+}
+
+.input_table_container {
+  position: relative;
+}
+
+#add_construction_input {
+  width: 256px;
+  /* height: 56px; */
+  position: absolute;
+  z-index: 101;
+  top: 66px;
+  left: 0;
+  margin: 0 12px;
+}
+
+// #add_cost_input {
+//   width: 256px;
+//   /* height: 56px; */
+//   position: absolute;
+//   z-index: 999;
+//   top: 66px;
+//   margin: 0 12px;
+// }

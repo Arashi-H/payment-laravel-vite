@@ -34,7 +34,6 @@ const Construction = () => {
   const dispatch = useDispatch()
 
   let { house } = useParams();
-
   const [constructions, setConstructions] = useState([])
   const [addConstruction, setAddConstruction] = useState({
     name: '',
@@ -100,7 +99,7 @@ const Construction = () => {
       }
     }
     getConstructionData()
-  }, [])
+  }, [house])
 
   const ConstructionTableInit = () => {
     const headerTemplate = document.createElement('template');
