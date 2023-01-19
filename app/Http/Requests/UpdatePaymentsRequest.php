@@ -24,7 +24,30 @@ class UpdatePaymentsRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'pay_date' => [
+                'date',
+                'required',
+            ],
+            'article_id' => [
+                'numeric',
+                'required',
+            ],
+            'construction_id' => [
+                'numeric',
+                'required',
+            ],
+            'company_id' => [
+                'required',
+                'numeric',
+            ],
+            'cost' => [
+                'required',
+                'numeric',
+            ],
+            'is_cash' => [
+                'required',
+                'numeric',
+            ]
         ];
     }
 }

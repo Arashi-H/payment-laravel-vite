@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use App\Models\TableMap;
 use App\Models\Budgets;
+use App\Models\Article;
+use App\Models\TableMap;
 use Carbon\Carbon;
 use App\Models\SystemLog;
 use App\Http\Requests\StoreBudgetsRequest;
@@ -64,9 +65,10 @@ class BudgetsController extends Controller
      */
     public function store(StoreBudgetsRequest $request)
     {
-        // $validated = $request->validated();
         $data = $request->all();
         $user = Auth::user();
+        $data['created_user_id'] = $user->id;
+        $data['updated_user_id'] = $user->id;
         $budget = Budgets::create($data);
 
         $table = TableMap::select('*')->where('name', 'budget')->get();
@@ -133,9 +135,12 @@ class BudgetsController extends Controller
 
         $budget->update($request->all());
 
+        $budgets = Budgets::select('*')->where('article_id', $budget->article_id)->get();
+
         return response()->json([
             'success' => true,
-            'data' => $budget
+            'data' => $budgets,
+            'message' => 'Budget updated successfully.'
         ]);
     }
 
@@ -164,7 +169,8 @@ class BudgetsController extends Controller
         $system_log = SystemLog::create($log);
 
         return response()->json([
-            'success' => true
+            'success' => true,
+            'message' => 'Budget deleted successfully.'
         ]);
     }
 }

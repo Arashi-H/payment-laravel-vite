@@ -38,10 +38,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::post('/articles', [ArticleController::class, 'create']);
     // Route::put('/articles', [ArticleController::class, 'update']);
 
+    Route::get('articles/autocomplete', [ArticleController::class, 'get_for_autocomplete']);
     Route::apiResource('articles', ArticleController::class);
 
     Route::apiResource('budgets', BudgetsController::class);
 
+    Route::get('companies/autocomplete', [CompaniesController::class, 'get_for_autocomplete']);
     Route::apiResource('companies', CompaniesController::class);
 
     Route::get('constructions/autocomplete', [ConstructionsController::class, 'get_for_autocomplete']);

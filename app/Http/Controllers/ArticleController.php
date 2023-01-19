@@ -245,4 +245,13 @@ class ArticleController extends Controller
             'success' => true
         ]);
 	}
+
+    public function get_for_autocomplete() {
+        $data_for_autocomplete = Article::select('id', 'name')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data_for_autocomplete
+        ]);
+    }
 }
