@@ -18,6 +18,7 @@ class PaymentsController extends Controller
     public function index()
     {
         $payments = Payments::all();
+        $payments = $payments->where('deleted', null)->values();
         // if(isset($request->id)) {
         //     $budgets = $budgets->where('id', $request->id);
         // }

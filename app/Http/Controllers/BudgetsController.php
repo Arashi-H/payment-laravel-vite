@@ -21,6 +21,7 @@ class BudgetsController extends Controller
     public function index()
     {
         $budgets = Budgets::all();
+        $budgets = $budgets->where('deleted', null)->values();
         // if(isset($request->id)) {
         //     $budgets = $budgets->where('id', $request->id);
         // }

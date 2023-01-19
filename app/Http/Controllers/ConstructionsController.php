@@ -22,6 +22,7 @@ class ConstructionsController extends Controller
     public function index(Request $request)
     {
         $constructions = Constructions::all();
+        $constructions = $constructions->where('deleted', null)->values();
         // if(isset($request->id)) {
         //     $budgets = $budgets->where('id', $request->id);
         // }

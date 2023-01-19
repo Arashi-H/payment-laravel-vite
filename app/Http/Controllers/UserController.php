@@ -11,6 +11,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
+        $users = $users->where('deleted', null)->values();
         // if(isset($request->id)) {
         //     $budgets = $budgets->where('id', $request->id);
         // }

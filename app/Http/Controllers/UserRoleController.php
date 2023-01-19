@@ -10,6 +10,7 @@ class UserRoleController extends Controller
     public function index()
     {
         $user_roles = UserRole::all();
+        $user_roles = $user_roles->where('deleted', null)->values();
         // if(isset($request->id)) {
         //     $budgets = $budgets->where('id', $request->id);
         // }
