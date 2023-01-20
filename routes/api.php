@@ -50,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::get('constructions/run', [ConstructionsController::class, 'run']);
     Route::apiResource('constructions', ConstructionsController::class);
 
+    Route::get('payments/get_statistics_by_date', [PaymentsController::class, 'get_statistics_by_date']);
     Route::apiResource('payments', PaymentsController::class);
 
     Route::apiResource('roles', RoleController::class);

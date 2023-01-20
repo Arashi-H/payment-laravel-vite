@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Payments;
@@ -200,6 +201,48 @@ class PaymentsController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Payment deleted successfully.'
+        ]);
+    }
+
+    public function get_statistics_by_date(Request $request) {
+        $pay_date = $request->pay_date;
+        $article_ids_whole = json_decode(Payments::select('article_id')->where('pay_date', $pay_date)->groupBy('article_id')->get());
+        $company_ids_whole = json_decode(Payments::select('company_id')->where('pay_date', $pay_date)->groupBy('company_id')->get());
+
+        $res = array();
+        foreach ($company_ids_whole as $company_id_raw) {
+            $company_id = $company_id_raw->company_id;
+            $company = Companies::select('*')->where('id', $company_id)->first();
+
+            $data['company'] = $company->name;
+
+            $costs = json_decode(Payments::select('cost')->where('pay_date', $pay_date)->where('company_id', $company_id)->get());
+            $total_cost = 0;
+            foreach($costs as $cost_raw) {
+                $cost = $cost_raw->cost;
+                $total_cost += $cost;
+            }
+
+            $data['total_payment'] = $total_cost;
+
+            $article_ids = json_decode(Payments::select('article_id')->where('pay_date', $pay_date)->where('company_id', $company_id)->groupBy('article_id')->get());
+            foreach($article_ids as $article_id_raw) {
+                $article_id = $article_id_raw->article_id;
+                $article = Article::select('*')->where('id', $article_id)->first();
+                $costs_per_article = json_decode(Payments::select('cost')->where('pay_date', $pay_date)->where('company_id', $company_id)->where('article_id', $article_id)->get());
+                $article_cost = 0;
+                foreach($costs_per_article as $cost_per_construction_in_article_raw) {
+                    $cost_per_construction_in_article = $cost_per_construction_in_article_raw->cost;
+                    $article_cost += $cost_per_construction_in_article;
+                }
+                $data['payment_detail'][$article->name] = $article_cost;
+            }
+            array_push($res, $data);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $res
         ]);
     }
 }
