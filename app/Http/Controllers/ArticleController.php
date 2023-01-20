@@ -40,7 +40,7 @@ class ArticleController extends Controller
         }
 
         foreach ($articles as $article) {
-            $budgets = Budgets::select('*')->where('article_id', $article->id)->get();
+            $budgets = Budgets::select('*')->where('article_id', $article->id)->where('deleted', null)->get();
             foreach ($budgets as $budget) {
                 $construction = Constructions::select('*')->where('id', $budget->construction_id)->first();
                 if (!empty($construction)) {
