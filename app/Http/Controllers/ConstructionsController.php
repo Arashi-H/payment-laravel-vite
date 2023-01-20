@@ -86,6 +86,10 @@ class ConstructionsController extends Controller
         $data['created_user_id'] = $user->id;
         $data['updated_user_id'] = $user->id;
 
+        $last_sort = Constructions::max('sort');
+
+        $data['sort'] = $last_sort + 1;
+
         $construction = Constructions::create($data);
 
         $table = TableMap::select('*')->where('name', 'construction')->get();
@@ -152,9 +156,11 @@ class ConstructionsController extends Controller
 
         $construction->update($request->all());
 
+        $constructions = Constructions::select('*')->where('house', $construction->house)->get();
+
         return response()->json([
             'success' => true,
-            'data' => $construction
+            'data' => $constructions
         ]);
     }
 

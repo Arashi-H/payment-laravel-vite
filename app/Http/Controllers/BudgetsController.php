@@ -70,6 +70,16 @@ class BudgetsController extends Controller
         $user = Auth::user();
         $data['created_user_id'] = $user->id;
         $data['updated_user_id'] = $user->id;
+
+        $budget_already_existing = Budgets::select('*')->where('article_id', $data->article_id)->where('construction_id', $data->construction_id)->first();
+        if(!empty($budget_already_existing)) {
+            return response()->json([
+                'success' => false,
+                'data' => $budget_already_existing,
+                'message' => 'Budget for that article id and construction id already exists. Check network response.'
+            ]);
+        }
+
         $budget = Budgets::create($data);
 
         $table = TableMap::select('*')->where('name', 'budget')->get();

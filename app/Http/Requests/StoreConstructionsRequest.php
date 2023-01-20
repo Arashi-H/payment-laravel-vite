@@ -24,7 +24,14 @@ class StoreConstructionsRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => [
+                'string',
+                'required',
+            ],
+            'house' => [
+                'numeric',
+                'required',
+            ],
         ];
     }
 }

@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Payments;
 use App\Models\TableMap;
+use App\Models\Article;
+use App\Models\Constructions;
+use App\Models\Companies;
+use App\Models\Budgets;
 use Carbon\Carbon;
 use App\Models\SystemLog;
 use App\Http\Requests\StorePaymentsRequest;
@@ -39,7 +43,23 @@ class PaymentsController extends Controller
             $user_updated = User::select('*')->where('id', $payment->updated_user_id)->get();
             $payment['created_user_name'] = $user_created[0]->first_name.' '.$user_created[0]->last_name;
             $payment['updated_user_name'] = $user_updated[0]->first_name.' '.$user_updated[0]->last_name;
+
+            $article = Article::select('*')->where('id', $payment->article_id)->first();
+            $payment['article_name'] = $article->name;
+            $payment['is_house'] = $article->is_house;
+
+            $construction = Constructions::select('*')->where('id', $payment->construction_id)->first();
+            $payment['construction_name'] = $construction->name;
+
+            $company = Companies::select('*')->where('id', $payment->company_id)->first();
+            $payment['company_name'] = $company->name;
+
+            $budget = Budgets::select('*')->where('article_id', $payment->article_id)->where('construction_id', $payment->construction_id)->first();
+            $payment['budget_cost'] = $budget->cost;
+            $payment['contract_amount'] = $budget->contract_amount;
+            $payment['change_amount'] = $budget->change_amount;
         }
+
 		return response()->json([
             'success' => true,
             'data' => $payments
@@ -68,6 +88,16 @@ class PaymentsController extends Controller
         $user = Auth::user();
         $data['created_user_id'] = $user->id;
         $data['updated_user_id'] = $user->id;
+
+        $budget = Budgets::select('*')->where('article_id', $data->article_id)->where('construction_id', $data->construction_id)->first();
+        if(empty($budget)) {
+            return response()->json([
+                'success' => false,
+                'data' => $data,
+                'message' => 'There is no such budget to pay. Please check your payload again in network response.'
+            ]);
+        }
+
         $payment = Payments::create($data);
 
         $table = TableMap::select('*')->where('name', 'payment')->get();
