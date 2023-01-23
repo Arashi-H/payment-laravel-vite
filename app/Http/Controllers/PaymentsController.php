@@ -57,21 +57,14 @@ class PaymentsController extends Controller
 
             $budget = Budgets::select('*')->where('article_id', $payment->article_id)->where('construction_id', $payment->construction_id)->first();
             if(empty($budget)) {
-                $empty_record['article_id'] = $payment->article_id;
-                $empty_record['construction_id'] = $payment->construction_id;
-                $empty_record['cost'] = 0;
-                $empty_record['contract_amount'] = 0;
-                $empty_record['change_amount'] = 0;
-                $empty_record['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
-                $empty_record['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
-                $user = Auth::user();
-                $empty_record['created_user_id'] = $user->id;
-                $empty_record['updated_user_id'] = $user->id;
-                Budgets::create($empty_record);
+                $payment['budget_cost'] = 0;
+                $payment['contract_amount'] = 0;
+                $payment['change_amount'] = 0;
+            } else {
+                $payment['budget_cost'] = $budget->cost;
+                $payment['contract_amount'] = $budget->contract_amount;
+                $payment['change_amount'] = $budget->change_amount;
             }
-            $payment['budget_cost'] = $budget->cost;
-            $payment['contract_amount'] = $budget->contract_amount;
-            $payment['change_amount'] = $budget->change_amount;
         }
 
 		return response()->json([
