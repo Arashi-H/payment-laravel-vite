@@ -18,13 +18,13 @@ class CompaniesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $companies = Companies::all();
         $companies = $companies->where('deleted', null)->values();
-        // if(isset($request->id)) {
-        //     $budgets = $budgets->where('id', $request->id);
-        // }
+        if(isset($request->id)) {
+            $companies = $companies->where('id', $request->id);
+        }
         // if(isset($request->name)) {
         //     $budgets = $budgets->where('name', $request->name);
         // }

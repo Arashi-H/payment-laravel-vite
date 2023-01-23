@@ -27,11 +27,7 @@ class UpdateConstructionsRequest extends FormRequest
             'name' => [
                 'string',
                 'required',
-            ],
-            'house' => [
-                'numeric',
-                'required',
-            ],
+            ]
         ];
     }
 }

@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $users = User::all();
         $users = $users->where('deleted', null)->values();
-        // if(isset($request->id)) {
-        //     $budgets = $budgets->where('id', $request->id);
-        // }
+        if(isset($request->id)) {
+            $users = $users->where('id', $request->id);
+        }
         // if(isset($request->name)) {
         //     $budgets = $budgets->where('name', $request->name);
         // }

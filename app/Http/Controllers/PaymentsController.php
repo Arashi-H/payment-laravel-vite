@@ -23,22 +23,22 @@ class PaymentsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $payments = Payments::all();
         $payments = $payments->where('deleted', null)->values();
-        // if(isset($request->id)) {
-        //     $budgets = $budgets->where('id', $request->id);
-        // }
+        if(isset($request->id)) {
+            $payments = $payments->where('id', $request->id);
+        }
         // if(isset($request->name)) {
         //     $budgets = $budgets->where('name', $request->name);
         // }
-        // if(isset($request->is_house)) {
-        //     $budgets = $budgets->where('is_house', $request->is_house);
-        // }
-        // if(isset($request->ended)) {
-        //     $budgets = $budgets->where('ended', $request->ended);
-        // }
+        if(isset($request->pay_date)) {
+            $payments = $payments->where('pay_date', $request->pay_date);
+        }
+        if(isset($request->article_id)) {
+            $payments = $payments->where('article_id', $request->article_id);
+        }
         foreach ($payments as $payment) {
             $user_created = User::select('*')->where('id', $payment->created_user_id)->get();
             $user_updated = User::select('*')->where('id', $payment->updated_user_id)->get();
@@ -207,6 +207,16 @@ class PaymentsController extends Controller
     public function get_statistics_by_date(Request $request) {
         $pay_date = $request->pay_date;
         $article_ids_whole = json_decode(Payments::select('article_id')->where('pay_date', $pay_date)->groupBy('article_id')->get());
+        $article_names = array();
+        foreach ($article_ids_whole as $article_ids_raw) {
+            $article_id = $article_ids_raw->article_id;
+            $article = Article::select('*')->where('id', $article_id)->first();
+            array_push($article_names, $article->name);
+        }
+
+        // var_dump($data['article_names']);
+        // exit();
+
         $company_ids_whole = json_decode(Payments::select('company_id')->where('pay_date', $pay_date)->groupBy('company_id')->get());
 
         $res = array();
@@ -242,7 +252,8 @@ class PaymentsController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $res
+            'data' => $res,
+            'article_names' => $article_names
         ]);
     }
 }

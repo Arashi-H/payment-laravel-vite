@@ -15,13 +15,13 @@ class SetingsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $setings = Setings::all();
         $setings = $setings->where('deleted', null)->values();
-        // if(isset($request->id)) {
-        //     $budgets = $budgets->where('id', $request->id);
-        // }
+        if(isset($request->id)) {
+            $setings = $setings->where('id', $request->id);
+        }
         // if(isset($request->name)) {
         //     $budgets = $budgets->where('name', $request->name);
         // }

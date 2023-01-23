@@ -8,6 +8,7 @@ use App\Models\TableMap;
 use Carbon\Carbon;
 use App\Models\SystemLog;
 use App\Models\User;
+use App\Models\Budgets;
 use App\Models\Constructions;
 use App\Http\Requests\StoreConstructionsRequest;
 use App\Http\Requests\UpdateConstructionsRequest;
@@ -23,9 +24,9 @@ class ConstructionsController extends Controller
     {
         $constructions = Constructions::all();
         $constructions = $constructions->where('deleted', null)->values();
-        // if(isset($request->id)) {
-        //     $budgets = $budgets->where('id', $request->id);
-        // }
+        if(isset($request->id)) {
+            $constructions = $constructions->where('id', $request->id);
+        }
         // if(isset($request->name)) {
         //     $budgets = $budgets->where('name', $request->name);
         // }
@@ -193,8 +194,19 @@ class ConstructionsController extends Controller
         ]);
     }
 
-    public function get_for_autocomplete() {
-        $data_for_autocomplete = Constructions::select('id', 'name')->get();
+    public function get_for_autocomplete(Request $request) {
+        if ($request) {
+            $article_id = $request->article_id;
+            $construction_ids = json_decode(Budgets::select('construction_id')->where('article_id', $article_id)->get());
+            $to_remove_from_autocomplete = array();
+            foreach ($construction_ids as $construction_id_raw) {
+                $construction_id = $construction_id_raw->construction_id;
+                array_push($to_remove_from_autocomplete, $construction_id);
+            }
+            // var_dump($to_remove_from_autocomplete); exit();
+        }
+
+        $data_for_autocomplete = Constructions::select('id', 'name')->whereNotIn('id', $to_remove_from_autocomplete)->get();
 
         return response()->json([
             'success' => true,
