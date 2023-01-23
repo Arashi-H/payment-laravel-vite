@@ -56,6 +56,19 @@ class PaymentsController extends Controller
             $payment['company_name'] = $company->name;
 
             $budget = Budgets::select('*')->where('article_id', $payment->article_id)->where('construction_id', $payment->construction_id)->first();
+            if(empty($budget)) {
+                $empty_record['article_id'] = $payment->article_id;
+                $empty_record['construction_id'] = $payment->construction_id;
+                $empty_record['cost'] = 0;
+                $empty_record['contract_amount'] = 0;
+                $empty_record['change_amount'] = 0;
+                $empty_record['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
+                $empty_record['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
+                $user = Auth::user();
+                $empty_record['created_user_id'] = $user->id;
+                $empty_record['updated_user_id'] = $user->id;
+                Budgets::create($empty_record);
+            }
             $payment['budget_cost'] = $budget->cost;
             $payment['contract_amount'] = $budget->contract_amount;
             $payment['change_amount'] = $budget->change_amount;
@@ -89,15 +102,6 @@ class PaymentsController extends Controller
         $user = Auth::user();
         $data['created_user_id'] = $user->id;
         $data['updated_user_id'] = $user->id;
-
-        $budget = Budgets::select('*')->where('article_id', $request->article_id)->where('construction_id', $request->construction_id)->first();
-        if(empty($budget)) {
-            return response()->json([
-                'success' => false,
-                'data' => $data,
-                'message' => 'There is no such budget to pay. Please check your payload again in network response.'
-            ]);
-        }
 
         $payment = Payments::create($data);
 
