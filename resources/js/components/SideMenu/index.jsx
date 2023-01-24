@@ -243,7 +243,7 @@ const SideMenu = () => {
             <StyledMenuItem routerLink={<Link to="/construction/0" />} >Building construction list</StyledMenuItem>
           </StyledSubMenu>
           <StyledSubMenu icon={<FaYenSign />} label="Input Management">
-            <StyledMenuItem >Input confirmation</StyledMenuItem>
+            <StyledMenuItem routerLink={<Link to="/payment" />} >Input confirmation</StyledMenuItem>
             <StyledMenuItem >Payment confirmation</StyledMenuItem>
           </StyledSubMenu>
           <StyledSubMenu icon={<FaRegClone />} label="Totalling">

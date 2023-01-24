@@ -113,6 +113,7 @@ const Company = () => {
   }
 
   useEffect(() => {
+    
     getCompanyData()
   }, [])
 

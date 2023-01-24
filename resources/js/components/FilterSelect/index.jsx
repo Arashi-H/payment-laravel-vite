@@ -3,7 +3,7 @@ import { FaOctopusDeploy } from 'react-icons/fa';
 import Select from 'react-select';
 import styled from 'styled-components';
 
-import './AutoConstruction.scss'
+import './FilterSelect.scss'
 
 import { useMousePos, useWindowDimensions } from '../../utils/Helper';
 
@@ -20,7 +20,7 @@ const BottomStyledSelect = styled(Select)`
   }
 `
 
-const AutoConstruction = (props) => {
+const FilterSelect = (props) => {
 
   const selectRef = useRef()
   const { posY } = useMousePos();
@@ -33,15 +33,19 @@ const AutoConstruction = (props) => {
     else setPosition('top')
   }
 
+  useEffect(() => {
+    console.log(props.value)
+  }, [props.value])
+
   return (
     <>
       {
         position == 'top' && 
           <div ref={selectRef} id={props.id}>
             <StyledSelect 
-              options={props.constructions} 
+              options={props.options}
               value={props.value}
-              styles={{ menu: (base) => ({ ...base, marginBottom: 76 }) }}
+              // defaultValue={props.defaultValue}
               onChange={(val) => props.onChange(val)}
               // onFocus={() => focused()}
             />
@@ -64,4 +68,4 @@ const AutoConstruction = (props) => {
 }
 
 // Wrap component using the `pure` HOC from recompose
-export default memo(AutoConstruction);
+export default memo(FilterSelect);

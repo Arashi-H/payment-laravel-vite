@@ -1,11 +1,3 @@
-.custom_autocomplete_input {
-  height: auto;
-  width: 100%;
-  .smart-action-button {
-    padding: 10px 20px;
-  }
-}
-
 .custom_date_input {
   height: auto;
   width: 100%;
@@ -20,6 +12,11 @@
   }
 }
 
-.continue_btn {
-  margin-right: 10px;
+.smart-table-container th,
+.smart-table-container td {
+  padding: 2px;
+}
+
+.smart-table-container td {
+  text-align: center;
 }

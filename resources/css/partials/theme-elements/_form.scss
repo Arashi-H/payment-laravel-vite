@@ -15,7 +15,7 @@
 
     &.form-control-sm {
         height: calc(1.8125rem + 2px);
-        font-size: .875rem;
+        font-size: 0.875rem;
     }
 
     &.form-control-range {
@@ -24,6 +24,11 @@
 
     &:focus {
         background: $theme-background;
+        /* Leo Reed style----------*/
+        border-width: 2px;
+        border-color: #007bff;
+        box-shadow: none;
+        /*-------------------------*/
     }
 
     &::-moz-placeholder {
@@ -75,7 +80,7 @@
     }
 }
 
-.custom-select{
+.custom-select {
     height: calc(2.25rem + 9px);
 }
 /* input group End */
@@ -124,21 +129,22 @@ select.form-control-lg:not([size]):not([multiple]) {
 .bootstrap-tagsinput {
     width: 100%;
 }
-.custom-file-label{
+.custom-file-label {
     height: auto;
-    &:after{
+    &:after {
         height: auto;
-        padding: 0.550rem 0.75rem;
+        padding: 0.55rem 0.75rem;
     }
 }
-.form-control.is-invalid, .was-validated .form-control:invalid,
-.was-validated .form-control:valid, .form-control.is-valid {
-    background-position: calc(100% - 10px) calc(.375em + 0.4875rem);
+.form-control.is-invalid,
+.was-validated .form-control:invalid,
+.was-validated .form-control:valid,
+.form-control.is-valid {
+    background-position: calc(100% - 10px) calc(0.375em + 0.4875rem);
 }
 
-.was-validated .form-control:invalid~.invalid-feedback {
-  background: #fff;
-  margin-top: 0;
-  padding-top: 0.25em;
+.was-validated .form-control:invalid ~ .invalid-feedback {
+    background: #fff;
+    margin-top: 0;
+    padding-top: 0.25em;
 }
-

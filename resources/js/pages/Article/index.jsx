@@ -21,7 +21,7 @@ import { IoMdRemoveCircle, IoMdAddCircle } from "react-icons/io"
 
 import CreatePayment from '../../components/CreatePayment'
 import UpdateHistory from "../../components/UpdateHistory";
-import AutoConstruction from "../../components/AutoConstruction";
+import FilterSelect from "../../components/FilterSelect";
 
 import {useWindowDimensions} from '../../utils/Helper'
 
@@ -35,6 +35,8 @@ import {
 import { logout } from "../../actions/auth";
 import agent from '../../api/'
 
+let editable_data = {}
+
 const Article = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -42,13 +44,14 @@ const Article = () => {
   const budgetEditTable = useRef()
   const budgetAddTable = useRef()
 
-  const { width } = useWindowDimensions();
+  const { width } = useWindowDimensions()
 
   const [page, setPage] = useState('list')
   const [articles, setArticles] = useState([])
   const [constructions, setConstructions] = useState([])
   const [editArticle, setEditArticle] = useState({})
   const [addArticle, setAddArticle] = useState({name: '', contract_amount: 0, is_house: 1, ended: 0})
+  const [paymentArticle, setPaymentArticle] = useState({})
   const [budgets, setBudgets] = useState([])
   const [addBudget, setAddBudget] = useState({})
   const [budgetRowCount, setBudgetRowCount] = useState(0)
@@ -77,6 +80,7 @@ const Article = () => {
       dataField: '',
       width: 100,
       allowSort: false,
+      allowMenu: false,
       formatFunction(settings) {
         settings.template = renderToString(<a className="table_article_edit_btn" data-id={settings.data.id}>Detail</a>);
       }
@@ -85,6 +89,7 @@ const Article = () => {
       dataField: '',
       width: 100,
       allowSort: false,
+      allowMenu: false,
       formatFunction(settings) {
         settings.template = renderToString(<a className="table_article_payment_btn" data-id={settings.data.id}>Input</a>);
       }
@@ -114,7 +119,31 @@ const Article = () => {
       label: 'Construction',
       dataField: 'construction_name',
       dataType: 'string',
-      allowEdit: false
+      editor: {
+			  template: renderToString(<div id="edit_budget_construction_container"></div>),
+        onInit(row, column, editor, value) {
+          editable_data = {value: budgets[row].construction_id, label: budgets[row].construction_name}
+          ReactDOM.render(
+            <FilterSelect 
+              id="edit_construction_input"
+              options={constructions} 
+              // value={editable_data}
+              defaultValue={editable_data}
+              onChange={(val) => {
+                // let r_budgets = [...budgets]
+                // r_budgets[row].construction_id = val.value
+                // r_budgets[row].construction_name = val.label
+                editable_data = {value: val.value, label:val.label}
+                console.log('auto construction on change function=', editable_data)
+                // setBudgets([...r_budgets])
+              }}
+            />, editor
+          )
+        },
+        onRender(row, column, editor, value) {
+          console.log('onRender data=', row)
+        }
+      }
     }, {
       label: 'Budget',
       dataField: 'cost',
@@ -142,6 +171,7 @@ const Article = () => {
       width: 100,
       allowSort: false,
       allowEdit: false,
+      allowMenu: false,
       formatFunction(settings) {
         settings.template = renderToString(<a className="table_budget_delete_btn" data-id={settings.data.id}><IoMdRemoveCircle /></a>);
       }
@@ -162,6 +192,7 @@ const Article = () => {
 
   useEffect(() => {
     getArticleData()
+    getConstructionOptions()
   }, [])
 
   useEffect(() => {
@@ -226,7 +257,6 @@ const Article = () => {
       total_contract_amount += budget.contract_amount
       total_change_amount += budget.change_amount
     })
-    console.log('budgets add table init data=', budgets)
 
     document.querySelector(`#totalBudget`).innerHTML = total_cost.toLocaleString("en-US")
     document.querySelector(`#totalContract`).innerHTML = total_contract_amount.toLocaleString("en-US")
@@ -279,7 +309,6 @@ const Article = () => {
     document.querySelector(`#totalChange`).innerHTML = total_change_amount.toLocaleString("en-US")
 
     setLoadBudgetTable(true)
-    loadBudgetTable
     // setFirstLoadTable(false)
   }
 
@@ -301,29 +330,64 @@ const Article = () => {
     }
   }
 
-  const handleBudgetTableChange = (event) => {
-    console.log('handle budget table changed=', event)
-  }
-
   const handleBudgetTableKeyPressed = (event) => {
     if(event.key == 'Enter') {
       console.log('etner pressed.')
     }
   }
 
-  const handleBudgetChanged = (event) => {
-    console.log(event)
+  const handleBudgetEdited = async(event) => {
+    const changed_data = event.detail.row
+    console.log('handleBudgetEdited data=', changed_data)
+    if(page == 'add') {
+      let r_budgets = [...budgets]
+      var index = r_budgets.map(function(e) { return e.id; }).indexOf(changed_data.id);
+      r_budgets[index] = {
+        id: changed_data.id,
+        construction_id: editable_data.value,
+        construction_name: editable_data.label,
+        cost: changed_data.cost, 
+        contract_amount: changed_data.contract_amount, 
+        change_amount: changed_data.change_amount
+      }
+      setBudgets([...r_budgets])
+    } else if(page == 'edit') {
+      dispatch(startAction())
+      const res = await agent.common.editBudgets(changed_data.id, editArticle.id, editable_data.value, changed_data.cost, changed_data.contract_amount, changed_data.change_amount)
+      if (res.data.success) {
+        dispatch(showToast('success', res.data.message))
+        setBudgets([...res.data.data])
+      }
+      else dispatch(showToast('error', res.data.message))
+      dispatch(endAction())
+    }
   }
 
   const getArticleData = async() => {
     dispatch(startAction())
     try {
-      const resArticle = await agent.common.getArticle()
-      const resAutoConstruction = await agent.common.getAutoConstruction()
-      console.log('resArticle data=', resArticle.data.data)
+      const resArticle = await agent.common.getAllArticle()
       if (resArticle.data.success) {
         setArticles([...resArticle.data.data])
       }
+      dispatch(endAction())
+    } catch (error) {
+      if (error.response.status >= 400 && error.response.status <= 500) {
+        dispatch(endAction())
+        dispatch(showToast('error', error.response.data.message))
+        if (error.response.data.message == 'Unauthorized') {
+          localStorage.removeItem('token')
+          dispatch(logout())
+          navigate('/')
+        }
+      }
+    }
+  }
+
+  const getConstructionOptions = async() => {
+    dispatch(startAction())
+    try {
+      const resAutoConstruction = await agent.common.getAutoConstruction()
 
       if(resAutoConstruction.data.success) {
         let constructionOptions = []
@@ -390,10 +454,34 @@ const Article = () => {
       setBudgetRowCount(budgetRowCount + 1)
     } else if(page == 'edit') {
       dispatch(startAction())
-      const res = await agent.common.addBudget(addBudget.article_id, addBudget.construction.value, addBudget.cost, addBudget.contract_amount, addBudget.change_amount)
+      const res = await agent.common.addBudget(Number(addBudget.article_id), Number(addBudget.construction.value), Number(addBudget.cost), Number(addBudget.contract_amount), Number(addBudget.change_amount))
       if (res.data.success) {
         setBudgets([...budgets, {id: res.data.data.id, construction_id: res.data.data.construction_id, construction_name: addBudget.construction.label, cost: res.data.data.cost, contract_amount: res.data.data.contract_amount, change_amount: res.data.data.change_amount}])
         setAddBudget({...addBudget, construction: {...constructions[0]}, cost: 0, contract_amount: 0, change_amount: 0})
+        getArticleData()
+        dispatch(showToast('success', res.data.message))
+      }
+      else dispatch(showToast('error', res.data.message))
+      dispatch(endAction())
+    }
+  }
+
+  const deleteBudget = async(budget_id) => {
+    if(page == 'add') {
+      const r_budgets = budgets.filter((el) => {
+        return el.id != budget_id;
+      });
+      setBudgets([...r_budgets])
+    } else if(page == 'edit') {
+      dispatch(startAction())
+      const res = await agent.common.deleteBudget(budget_id)
+      if (res.data.success) {
+        const r_budgets = budgets.filter((el) => {
+          return el.id != budget_id;
+        });
+        setBudgets([...r_budgets])
+        setAddBudget({...addBudget, construction: {...constructions[0]}, cost: 0, contract_amount: 0, change_amount: 0})
+        getArticleData()
         dispatch(showToast('success', res.data.message))
       }
       else dispatch(showToast('error', res.data.message))
@@ -425,26 +513,11 @@ const Article = () => {
     setBudgetRowCount(0)
   }
 
-  const deleteBudget = async(budget_id) => {
-    if(page == 'add') {
-      const r_budgets = budgets.filter((el) => {
-        return el.id != budget_id;
-      });
-      setBudgets([...r_budgets])
-    } else if(page == 'edit') {
-      dispatch(startAction())
-      const res = await agent.common.deleteBudget(budget_id)
-      if (res.data.success) {
-        setBudgets([...budgets, {id: res.data.data.id, construction_id: res.data.data.construction_id, construction_name: addBudget.construction.label, cost: res.data.data.cost, contract_amount: res.data.data.contract_amount, change_amount: res.data.data.change_amount}])
-        setAddBudget({...addBudget, construction: {...constructions[0]}, cost: 0, contract_amount: 0, change_amount: 0})
-        dispatch(showToast('success', res.data.message))
-      }
-      else dispatch(showToast('error', res.data.message))
-      dispatch(endAction())
-    }
-  }
-
   const goArticlePayment = (article_id) => {
+    const result = articles.find(article => {
+      return article.id == article_id;
+    });
+    setPaymentArticle({...result})
     setPage('payment')
   }
 
@@ -668,9 +741,9 @@ const Article = () => {
                         <div className="row">
                           <div className="col-md-12">
                             <div className="input_table_container">
-                              <AutoConstruction 
+                              <FilterSelect 
                                 id="add_construction_input"
-                                constructions={constructions} 
+                                options={constructions} 
                                 value={addBudget.construction}
                                 onChange={(val) => {
                                   setAddBudget({...addBudget, construction: {...val}});
@@ -698,7 +771,7 @@ const Article = () => {
                                 onClick={(e) => handleBudgetTableClick(e)}
                                 // onChange = {(e) => handleBudgetTableChange(e)}
                                 onLoad={() => budgetEditTableInit()}
-                                onRowEndEdit={(e) => handleBudgetChanged(e)}
+                                onRowEndEdit={(e) => handleBudgetEdited(e)}
                                 // onKeyUp={(e) => handleBudgetTableKeyPressed(e)}
                               />
                             </div>
@@ -790,9 +863,9 @@ const Article = () => {
                         <div className="row">
                           <div className="col-md-12">
                             <div className="input_table_container">
-                              <AutoConstruction 
+                              <FilterSelect 
                                 id="add_construction_input"
-                                constructions={constructions}
+                                options={constructions}
                                 value={addBudget.construction}
                                 onChange={(val) => {
                                   setAddBudget({...addBudget, construction: {...val}});
@@ -818,6 +891,7 @@ const Article = () => {
                                 editMode="row"
                                 sortMode='many'
                                 onClick={(e) => handleBudgetTableClick(e)}
+                                onRowEndEdit={(e) => handleBudgetEdited(e)}
                                 onLoad={() => budgetAddTableInit()}
                               />
                             </div>
@@ -829,7 +903,7 @@ const Article = () => {
               }
               {
                 page == 'payment' &&
-                  <CreatePayment clickCancelBtn={clickCancelBtn}/>
+                  <CreatePayment clickCancelBtn={clickCancelBtn} setPage={setPage} paymentArticle={paymentArticle}/>
               }
               
             </div>

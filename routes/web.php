@@ -40,3 +40,7 @@ Route::get('/company', function () {
 Route::get('/construction/{number}', function () {
     return view('welcome');
 });
+
+Route::get('/payment', function () {
+    return view('welcome');
+});

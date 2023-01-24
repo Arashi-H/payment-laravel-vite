@@ -18,6 +18,8 @@ import SimpleReactValidator from 'simple-react-validator';
 import { FaYenSign } from "react-icons/fa"
 import { IoMdRemoveCircle, IoMdAddCircle } from "react-icons/io"
 
+import {useWindowDimensions} from '../../utils/Helper'
+
 import './Construction.scss';
 
 import {
@@ -34,6 +36,11 @@ const Construction = () => {
   const dispatch = useDispatch()
 
   let { house } = useParams();
+
+  const constructionTable = useRef()
+
+  const { width } = useWindowDimensions()
+
   const [constructions, setConstructions] = useState([])
   const [addConstruction, setAddConstruction] = useState({
     name: '',
@@ -41,7 +48,8 @@ const Construction = () => {
   })
   const [editConstruction, setEditConstruction] = useState({})
 
-  const constructionTable = useRef()
+  const [loadConstructionTable, setLoadConstructionTable] = useState(false)
+
 
   const constructionColumns = [
     {
@@ -77,29 +85,41 @@ const Construction = () => {
 	});
 
   useEffect(() => {
-    async function getConstructionData() {
-      dispatch(startAction())
-      try {
-        const resConstruction = await agent.common.getConstruction(house)
-        console.log('resConstruction data=', resConstruction.data.data)
-        // if (resConstruction.data.success) {
-          setConstructions([...resConstruction.data.data])
-        // }
+    getConstructionData()
+    setAddConstruction({...addConstruction, house: house})
+  }, [house])
+
+  useEffect(() => {
+    if(loadConstructionTable) {
+      const id_th_width = document.querySelector(`#id_th`).offsetWidth
+      const name_add_input_width = document.querySelector(`#name_add_input`).offsetWidth
+      const construction_add_btn_width = document.querySelector(`#construction_add_btn`).offsetWidth
+      console.log('name_add_input width=', name_add_input_width)
+      document.querySelector(`#add_name_input`).style = 'width: ' + (name_add_input_width - 24) +'px; ' + 'left: ' + (id_th_width) + 'px'
+      document.querySelector(`#add_submit_btn`).style = 'width: ' + (construction_add_btn_width - 24) + 'px;' + 'left: ' + (id_th_width + name_add_input_width) + 'px'
+    }
+  }, [width, loadConstructionTable])
+
+  const getConstructionData = async() => {
+    dispatch(startAction())
+    try {
+      const resConstruction = await agent.common.getConstruction(house)
+      if (resConstruction.data.success) {
+        setConstructions([...resConstruction.data.data])
+      }
+      dispatch(endAction())
+    } catch (error) {
+      if (error.response.status >= 400 && error.response.status <= 500) {
         dispatch(endAction())
-      } catch (error) {
-        if (error.response.status >= 400 && error.response.status <= 500) {
-          dispatch(endAction())
-          dispatch(showToast('error', error.response.data.message))
-          if (error.response.data.message == 'Unauthorized') {
-            localStorage.removeItem('token')
-            dispatch(logout())
-            navigate('/')
-          }
+        dispatch(showToast('error', error.response.data.message))
+        if (error.response.data.message == 'Unauthorized') {
+          localStorage.removeItem('token')
+          dispatch(logout())
+          navigate('/')
         }
       }
     }
-    getConstructionData()
-  }, [house])
+  }
 
   const ConstructionTableInit = () => {
     const headerTemplate = document.createElement('template');
@@ -107,7 +127,7 @@ const Construction = () => {
 
 		headerTemplate.innerHTML = renderToString(
       <tr>
-				<th></th>
+				<th id="id_th"></th>
 				<th id="name_add_input"></th>
 				<th id="construction_add_btn"></th>
 			</tr>
@@ -116,15 +136,7 @@ const Construction = () => {
 		document.body.appendChild(headerTemplate);
 
 		constructionTable.current.headerRow = headerTemplate.id;
-
-    ReactDOM.render(
-      <Input className="table_name_add_input" onChange={(e) => setAddConstruction({...addConstruction, name: e.target.value})}/>,
-      document.querySelector(`#name_add_input`)
-    )
-    ReactDOM.render(
-      <a className="table_construction_add_btn" ><IoMdAddCircle /></a>,
-      document.querySelector(`#construction_add_btn`)
-    )
+    setLoadConstructionTable(true)
   }
 
   const handleConstructionTableClick = (event) => {
@@ -135,8 +147,45 @@ const Construction = () => {
     }
 	}
 
-  const constructionDeleteSubmit = (id) => {
-    console.log('delete construction with id=', id)
+  const handleConstructionEdited = async(event) => {
+    const changed_data = event.detail.row
+    console.log('handleConstructionEdited data=', changed_data)
+      dispatch(startAction())
+      const res = await agent.common.editConstruction(changed_data.id, changed_data.name, changed_data.sort)
+      if (res.data.success) {
+        dispatch(showToast('success', res.data.message))
+        setConstructions([...res.data.data])
+      }
+      else dispatch(showToast('error', res.data.message))
+      dispatch(endAction())
+  }
+
+  const clickAddConstructionBtn = async() => {
+    dispatch(startAction())
+    const res = await agent.common.addConstruction(addConstruction.name, Number(addConstruction.house))
+    if (res.data.success) {
+      setConstructions([...constructions, {id: res.data.data.id, name: res.data.data.name, sort: res.data.data.sort, house: res.data.data.house}])
+      setAddConstruction({...addConstruction, name: ''})
+      getConstructionData()
+      dispatch(showToast('success', res.data.message))
+    }
+    else dispatch(showToast('error', res.data.message))
+    dispatch(endAction())
+  }
+
+  const constructionDeleteSubmit = async(id) => {
+    dispatch(startAction())
+    const res = await agent.common.deleteConstruction(id)
+    if (res.data.success) {
+      const r_constructions = constructions.filter((el) => {
+        return el.id != id;
+      });
+      setConstructions([...r_constructions])
+      getConstructionData()
+      dispatch(showToast('success', res.data.message))
+    }
+    else dispatch(showToast('error', res.data.message))
+    dispatch(endAction())
   }
 
   return (
@@ -172,23 +221,28 @@ const Construction = () => {
                   <h5 className="card-title">list</h5>
                 </div>
                 <div className="card-body">
-                  <Table 
-                    id="construction_table"
-                    ref={constructionTable}
-                    dataSource={constructionData} 
-                    // keyboardNavigation
-                    paging
-                    filtering
-                    // tooltip={tooltip}
-                    freezeHeader
-                    columns={constructionColumns} 
-                    columnMenu
-                    editing
-                    editMode="row"
-                    sortMode='many'
-                    onClick={(e) => handleConstructionTableClick(e)}
-                    onLoad={() => ConstructionTableInit()}
-                  />
+                  <div className="input_table_container">
+                    <input id="add_name_input" className="form-control table_add_input" type="text" value={addConstruction.name} onChange={(e) => setAddConstruction({...addConstruction, name: e.target.value})}/>
+                    <a id="add_submit_btn" className="construction_add_submit_btn" onClick={() => clickAddConstructionBtn()}><IoMdAddCircle /></a>
+                    <Table 
+                      id="construction_table"
+                      ref={constructionTable}
+                      dataSource={constructionData} 
+                      // keyboardNavigation
+                      paging
+                      filtering
+                      // tooltip={tooltip}
+                      freezeHeader
+                      columns={constructionColumns} 
+                      columnMenu
+                      editing
+                      editMode="row"
+                      sortMode='many'
+                      onClick={(e) => handleConstructionTableClick(e)}
+                      onRowEndEdit={(e) => handleConstructionEdited(e)}
+                      onLoad={() => ConstructionTableInit()}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

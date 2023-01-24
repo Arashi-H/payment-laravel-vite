@@ -20,7 +20,7 @@ import { FaYenSign } from "react-icons/fa"
 import { IoMdRemoveCircle, IoMdAddCircle } from "react-icons/io"
 
 import FilterSelect from "../FilterSelect"
-import './CreatePayment.scss'
+import './UpdatePayment.scss'
 
 import {
   startAction,
@@ -28,9 +28,9 @@ import {
   showToast
 } from '../../actions/common'
 import { logout } from "../../actions/auth";
-import agent from '../../api/'
+import agent from '../../api'
 
-const CreatePayment = (props) => {
+const UpdatePayment = (props) => {
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -38,22 +38,13 @@ const CreatePayment = (props) => {
   const [articles, setArticles] = useState([])
   const [companies, setCompanies] = useState([])
   const [constructions, setConstructions] = useState([])
-  const [addPayment, setAddPayment] = useState({
-    pay_date: '',
-    article: {
-      value: props.paymentArticle.id,
-      label: props.paymentArticle.name
-    },
-    construction: {
-      value: 0,
-      label: ''
-    },
-    company: {
-      value: 0,
-      label: ''
-    },
-    cost: 0,
-    is_cash: 0
+  const [updatePayment, setUpdatePayment] = useState({
+    pay_date: props.payment.pay_date, 
+    article: {label: props.payment.article_name, value: props.payment.article_id},
+    construction: {label: props.payment.construction_name, value: props.payment.construction_id},
+    company: {label:props.payment.company_name, value:props.payment.company_id},
+    cost: props.payment.cost,
+    is_cash: props.payment.is_cash
   })
 
   useEffect(() => {
@@ -75,7 +66,7 @@ const CreatePayment = (props) => {
           })
         })
         setConstructions([...constructionOptions])
-        setAddPayment({...addPayment, construction: {...constructionOptions[0]}})
+        setUpdatePayment({...updatePayment, construction: {...constructionOptions[0]}})
       }
       if(resAutoArticle.data.success) {
         let articleOptions = []
@@ -86,7 +77,7 @@ const CreatePayment = (props) => {
           })
         })
         setArticles([...articleOptions])
-        // setAddPayment({...addPayment, article: {...articleOptions[0]}})
+        // setUpdatePayment({...updatePayment, article: {...articleOptions[0]}})
       }
       if(resAutoCompany.data.success) {
         let companyOptions = []
@@ -97,7 +88,7 @@ const CreatePayment = (props) => {
           })
         })
         setCompanies([...companyOptions])
-        setAddPayment({...addPayment, company: {...companyOptions[0]}})
+        setUpdatePayment({...updatePayment, company: {...companyOptions[0]}})
       }
     } catch (error) {
       if (error.response.status >= 400 && error.response.status <= 500) {
@@ -113,7 +104,7 @@ const CreatePayment = (props) => {
 
   const clickSaveBtn = async() => {
     dispatch(startAction())
-    const res = await agent.common.addPayment(addPayment.pay_date, Number(addPayment.article.value), Number(addPayment.company.value), Number(addPayment.construction.value), Number(addPayment.cost), Number(addPayment.is_cash))
+    const res = await agent.common.updatePayment(updatePayment.pay_date, Number(updatePayment.article.value), Number(updatePayment.construction.value), Number(updatePayment.company.value), Number(updatePayment.cost), Number(updatePayment.is_cash))
     if (res.data.success) {
       dispatch(showToast('success', res.data.message))
       props.setPage('list')
@@ -122,40 +113,9 @@ const CreatePayment = (props) => {
     dispatch(endAction())
   }
 
-  const clickContinueSaveBtn = async() => {
-    dispatch(startAction())
-    const res = await agent.common.addPayment(addPayment.pay_date, Number(addPayment.article.value), Number(addPayment.company.value), Number(addPayment.construction.value), Number(addPayment.cost), Number(addPayment.is_cash))
-    if (res.data.success) {
-      dispatch(showToast('success', res.data.message))
-      setAddPayment({
-        pay_date: dateFormatting(new Date()), 
-        article: {
-          value: props.paymentArticle.id,
-          label: props.paymentArticle.name
-        },
-        construction: {
-          ...constructions[0]
-        },
-        company: {
-          ...companies[0]
-        },
-        cost: 0,
-        is_cash: 0
-      })
-    }
-    else dispatch(showToast('error', res.data.message))
-    dispatch(endAction())
-  }
-
   const dateFormatting = (date) => {
     var m = new Date(date);
     var dateString = m.getFullYear() +"-"+ (m.getMonth()+1) +"-"+ m.getDate()
-    return dateString
-  }
-
-  const monthDateFormatting = (date) => {
-    var m = new Date(date);
-    var dateString = m.getFullYear() +"-"+ (m.getMonth()+1)
     return dateString
   }
 
@@ -175,9 +135,9 @@ const CreatePayment = (props) => {
                 <div className="col-md-6">
                   <FilterSelect 
                     options={articles} 
-                    value={addPayment.article}
+                    value={updatePayment.article}
                     onChange={(val) => {
-                      setAddPayment({...addPayment, article: {...val}})
+                      setUpdatePayment({...updatePayment, article: {...val}})
                     }}
                   />
                 </div>
@@ -189,7 +149,7 @@ const CreatePayment = (props) => {
                   <label className="form-label">Date</label>
                 </div>
                 <div className="col-md-6">
-                  <DateInput className="custom_date_input" formatString="yyyy-MM-dd" placeholder="please select ... " value={addPayment.pay_date} onChange={(e) => setAddPayment({...addPayment, pay_date: dateFormatting(e.detail.value)})}/>
+                  <DateInput className="custom_date_input" value={updatePayment.pay_date} onChange={(e) => setUpdatePayment({...updatePayment, pay_date: dateFormatting(e.detail.value)})}/>
                 </div>
               </div>
             </div>
@@ -201,9 +161,9 @@ const CreatePayment = (props) => {
                 <div className="col-md-6">
                   <FilterSelect 
                     options={companies} 
-                    value={addPayment.company}
+                    value={updatePayment.company}
                     onChange={(val) => {
-                      setAddPayment({...addPayment, company: {...val}})
+                      setUpdatePayment({...updatePayment, company: {...val}})
                     }}
                   />
                 </div>
@@ -217,9 +177,9 @@ const CreatePayment = (props) => {
                 <div className="col-md-6">
                   <FilterSelect 
                     options={constructions} 
-                    value={addPayment.construction}
+                    value={updatePayment.construction}
                     onChange={(val) => {
-                      setAddPayment({...addPayment, construction: {...val}})
+                      setUpdatePayment({...updatePayment, construction: {...val}})
                     }}
                   />
                 </div>
@@ -235,7 +195,7 @@ const CreatePayment = (props) => {
                     <div className="input-group-prepend">
                       <span className="input-group-text"><FaYenSign /></span>
                     </div>
-                    <input className="form-control" type="text" value={addPayment.cost} onChange={(e) => setAddPayment({...addPayment, cost: e.target.value})}/>
+                    <input className="form-control" type="text" value={updatePayment.cost} onChange={(e) => setUpdatePayment({...updatePayment, cost: e.target.value})}/>
                   </div>
                 </div>
               </div>
@@ -247,7 +207,7 @@ const CreatePayment = (props) => {
                 </div>
                 <div className="col-md-6">
                   <div className="form-check">
-                    <input type="checkbox" className="form-check-input" checked={addPayment.is_cash} onChange={(e) =>  setAddPayment({...addPayment, is_cash: e.target.checked ? 1 : 0})}/>
+                    <input type="checkbox" className="form-check-input" checked={updatePayment.is_cash} onChange={(e) =>  setUpdatePayment({...updatePayment, is_cash: e.target.checked ? 1 : 0})}/>
                   </div>
                 </div>
               </div>
@@ -256,7 +216,6 @@ const CreatePayment = (props) => {
             <div className="action_btn_group">
               <button type="button" className="btn btn-secondary" onClick={() => props.clickCancelBtn()}>Cancel</button>
               <div>
-                <button type="button" className="btn btn-primary continue_btn" onClick={() => clickContinueSaveBtn()}>Continue to Register</button>
                 <button type="button" className="btn btn-primary" onClick={() => clickSaveBtn()}>Save</button>
               </div>
             </div>
@@ -267,4 +226,4 @@ const CreatePayment = (props) => {
   )
 }
 
-export default CreatePayment
+export default UpdatePayment
