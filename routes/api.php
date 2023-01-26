@@ -7,6 +7,7 @@ use App\Http\Controllers\ConstructionsController;
 use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SetingsController;
+use App\Http\Controllers\SystemLogController;
 use App\Http\Controllers\TransfersController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
@@ -64,6 +65,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('user-role', UserRoleController::class);
 
     Route::apiResource('menu', MenuController::class);
+
+    Route::apiResource('menu', SystemLogController::class);
 });
 
 

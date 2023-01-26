@@ -13,9 +13,13 @@ class SystemLogController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $system_logs = SystemLog::all();
+        return response()->json([
+            'success' => true,
+            'data' => $system_logs
+        ]);
     }
 
     /**
