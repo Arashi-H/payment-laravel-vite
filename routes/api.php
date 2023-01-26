@@ -66,7 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('menu', MenuController::class);
 
-    Route::apiResource('menu', SystemLogController::class);
+    Route::apiResource('systemlog', SystemLogController::class);
 });
 
 

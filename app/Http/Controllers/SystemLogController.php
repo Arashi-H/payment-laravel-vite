@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\SystemLog;
 use App\Http\Requests\StoreSystemLogRequest;
 use App\Http\Requests\UpdateSystemLogRequest;
@@ -15,7 +16,14 @@ class SystemLogController extends Controller
      */
     public function index(Request $request)
     {
-        $system_logs = SystemLog::all();
+        $system_logs = SystemLog::all()->sortDesc()->values();
+        // $system_logs = SystemLog::all();
+        if (isset($request->table_id)) {
+            $system_logs = $system_logs->where('table_id', $request->table_id)->values();
+        }
+        if (isset($request->record_id)) {
+            $system_logs = $system_logs->where('record_id', $request->record_id)->values();
+        }
         return response()->json([
             'success' => true,
             'data' => $system_logs
