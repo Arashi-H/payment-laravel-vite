@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\TableMap;
 use App\Models\SystemLog;
 use App\Http\Requests\StoreSystemLogRequest;
 use App\Http\Requests\UpdateSystemLogRequest;
@@ -23,6 +25,12 @@ class SystemLogController extends Controller
         }
         if (isset($request->record_id)) {
             $system_logs = $system_logs->where('record_id', $request->record_id)->values();
+        }
+        foreach ($system_logs as $system_log) {
+            $user = User::select('*')->where('id', $system_log->user_id)->first();
+            $system_log['user_name'] = $user->first_name.' '.$user->last_name;
+            $table = TableMap::select('*')->where('id', $system_log->table_id)->first();
+            $system_log['table_name'] = $table->name;
         }
         return response()->json([
             'success' => true,

@@ -105,7 +105,8 @@ class ConstructionsController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $construction
+            'data' => $construction,
+            'message' => 'Construction created successfully.'
         ]);
     }
 
