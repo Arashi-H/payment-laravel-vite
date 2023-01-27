@@ -52,6 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('constructions', ConstructionsController::class);
 
     Route::get('payments/get_statistics_by_date', [PaymentsController::class, 'get_statistics_by_date']);
+    Route::get('payments/download_excel', [PaymentsController::class, 'download_excel']);
     Route::apiResource('payments', PaymentsController::class);
 
     Route::apiResource('roles', RoleController::class);
@@ -66,6 +67,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('menu', MenuController::class);
 
+    Route::get('systemlog/get_budget_log_from_article_id', [SystemLogController::class, 'get_budget_log_from_article_id']);
+    Route::get('systemlog/get_construction_log_from_house_value', [SystemLogController::class, 'get_construction_log_from_house_value']);
     Route::apiResource('systemlog', SystemLogController::class);
 });
 
