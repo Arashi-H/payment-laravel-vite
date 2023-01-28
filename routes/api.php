@@ -52,7 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('constructions', ConstructionsController::class);
 
     Route::get('payments/get_statistics_by_date', [PaymentsController::class, 'get_statistics_by_date']);
-    Route::get('payments/download_excel', [PaymentsController::class, 'download_excel']);
+    // Route::get('payments/download_excel', [PaymentsController::class, 'download_excel']);
     Route::apiResource('payments', PaymentsController::class);
 
     Route::apiResource('roles', RoleController::class);
