@@ -207,7 +207,7 @@ class ConstructionsController extends Controller
             // var_dump($to_remove_from_autocomplete); exit();
         }
 
-        $data_for_autocomplete = Constructions::select('id', 'name')->whereNotIn('id', $to_remove_from_autocomplete)->get();
+        $data_for_autocomplete = Constructions::select('id', 'name')->whereNotIn('id', $to_remove_from_autocomplete)->where('deleted', null)->get();
 
         return response()->json([
             'success' => true,

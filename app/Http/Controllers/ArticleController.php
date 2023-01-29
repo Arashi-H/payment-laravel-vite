@@ -247,7 +247,7 @@ class ArticleController extends Controller
 	}
 
     public function get_for_autocomplete() {
-        $data_for_autocomplete = Article::select('id', 'name')->get();
+        $data_for_autocomplete = Article::select('id', 'name')->where('deleted', null)->get();
 
         return response()->json([
             'success' => true,
