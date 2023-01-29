@@ -72,7 +72,7 @@ class BudgetsController extends Controller
         $data['created_user_id'] = $user->id;
         $data['updated_user_id'] = $user->id;
 
-        $budget_already_existing = Budgets::select('*')->where('article_id', $data->article_id)->where('construction_id', $data->construction_id)->first();
+        $budget_already_existing = Budgets::select('*')->where('article_id', $request->article_id)->where('construction_id', $request->construction_id)->first();
         if(!empty($budget_already_existing)) {
             return response()->json([
                 'success' => false,
